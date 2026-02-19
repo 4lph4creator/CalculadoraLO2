@@ -1,91 +1,52 @@
-// Tabla oficial mm → m3
-const tabla = {
-0:0,
-2:4.2,
-50:75.6,
-100:213.36,
-200:608.16,
-300:1119.72,
-400:1720.32,
-500:2394.84,
-600:3129,
-700:3913.56,
-800:4739.28,
-880:5423.04,
-900:5596.92,
-1000:6479.76,
-1060:7019.04,
-1100:7381.08,
-1200:8293.32,
-1300:9209.76,
-1400:10124.52,
-1500:11030.88,
-1600:11922.12,
-1700:12790.68,
-1800:13629,
-1900:14430.36,
-2000:15185.52,
-2100:15884.4,
-2200:16515.24,
-2300:17063.76,
-2360:17334.32,
-2400:17508.12,
-2410:17556
-};
+// Factor conversión mmH2O → m³
+const FACTOR = 7.59276;
 
-const niveles = Object.keys(tabla).map(Number).sort((a,b)=>a-b);
+// Inputs
+const inputA = document.getElementById("nivelA");
+const inputB = document.getElementById("nivelB");
 
-function interpolar(mm){
-    if(tabla[mm]!==undefined) return tabla[mm];
+// Outputs
+const eqA = document.getElementById("m3A");
+const eqB = document.getElementById("m3B");
+const resultado = document.getElementById("resultado");
 
-    let menor=null, mayor=null;
+// Función principal
+function actualizar() {
 
-    for(let i=0;i<niveles.length;i++){
-        if(niveles[i]<mm) menor=niveles[i];
-        if(niveles[i]>mm){mayor=niveles[i];break;}
+    const valorA = inputA.value;
+    const valorB = inputB.value;
+
+    let m3A = null;
+    let m3B = null;
+
+    // ===== NIVEL A =====
+    if (valorA !== "") {
+        m3A = parseFloat(valorA) * FACTOR;
+        eqA.textContent = "Equivalente: " + m3A.toFixed(2) + " m³";
+    } else {
+        eqA.textContent = "—";
     }
 
-    if(menor===null || mayor===null) return 0;
-
-    const fraccion=(mm-menor)/(mayor-menor);
-    return tabla[menor]+fraccion*(tabla[mayor]-tabla[menor]);
-}
-
-function actualizar(){
-    const a=parseFloat(document.getElementById("nivelA").value);
-    const b=parseFloat(document.getElementById("nivelB").value);
-
-    if(!isNaN(a)){
-        document.getElementById("m3A").innerText="Equivalente: "+interpolar(a).toFixed(2)+" m³";
+    // ===== NIVEL B =====
+    if (valorB !== "") {
+        m3B = parseFloat(valorB) * FACTOR;
+        eqB.textContent = "Equivalente: " + m3B.toFixed(2) + " m³";
+    } else {
+        eqB.textContent = "—";
     }
 
-    if(!isNaN(b)){
-        document.getElementById("m3B").innerText="Equivalente: "+interpolar(b).toFixed(2)+" m³";
+    // ===== TOTAL =====
+    if (m3A !== null && m3B !== null) {
+        const total = m3A - m3B;
+        resultado.textContent = "Total descargado: " + total.toFixed(2) + " m³";
+    } else {
+        resultado.textContent = "Total descargado: —";
     }
 }
 
-function calcular(){
-    const a=parseFloat(document.getElementById("nivelA").value);
-    const b=parseFloat(document.getElementById("nivelB").value);
+// Eventos automáticos
+inputA.addEventListener("input", actualizar);
+inputB.addEventListener("input", actualizar);
 
-    if(isNaN(a)||isNaN(b)){
-        alert("Ingrese ambos niveles");
-        return;
-    }
-
-    if(a<=b){
-        alert("Nivel A debe ser mayor que Nivel B");
-        return;
-    }
-
-    const resultado=interpolar(a)-interpolar(b);
-
-    document.getElementById("resultado").innerText=
-        "Total descargado: "+resultado.toFixed(2)+" m³";
-}
-
-// listeners para actualización automática
-document.addEventListener("DOMContentLoaded",()=>{
-    document.getElementById("nivelA").addEventListener("input",actualizar);
-    document.getElementById("nivelB").addEventListener("input",actualizar);
-});
+// Ejecutar una vez al cargar
+actualizar();
