@@ -2,57 +2,35 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <title>Calculadora LO₂</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Calculadora LO2</title>
-
-  <!-- Manifest -->
-  <link rel="manifest" href="manifest.json">
-
-  <!-- Theme color -->
-  <meta name="theme-color" content="#1976d2">
-
-  <!-- Icons -->
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-
-  <!-- CSS -->
   <link rel="stylesheet" href="stiletto.css">
+  <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
 
-  <div id="app">
+  <div class="card">
 
-    <h1>Calculadora LO2</h1>
+    <img src="img/logo_transparent.png" class="logo">
 
-    <div class="card">
-      <label>Nivel A (mm)</label>
-      <input id="nivelA" type="number" placeholder="Ingrese mm">
-      <div id="m3A">—</div>
-    </div>
+    <h1>Calculadora LO₂</h1>
+    <p class="sub">Conversión y tramo de oxígeno líquido</p>
 
-    <div class="card">
-      <label>Nivel B (mm)</label>
-      <input id="nivelB" type="number" placeholder="Ingrese mm">
-      <div id="m3B">—</div>
-    </div>
+    <label>Nivel A (mmH₂O)</label>
+    <input id="nivelA" type="number">
+    <div id="m3A" class="equivalente">—</div>
 
-    <div class="resultado" id="resultado">
-      Total descargado: —
-    </div>
+    <label>Nivel B (mmH₂O)</label>
+    <input id="nivelB" type="number">
+    <div id="m3B" class="equivalente">—</div>
+
+    <div id="resultado" class="resultado">Total descargado: —</div>
 
   </div>
 
   <script src="app.js"></script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
-    }
-  </script>
 
 </body>
 </html>
