@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora LO2</title>
+<link rel="stylesheet" href="stiletto.css">
+</head>
+
+<body>
+
+<div class="card">
+
+<img src="img/logo.jpg" class="logo">
+
+<h1>Calculadora de Oxígeno Líquido</h1>
+
+<label>Nivel A (mmH₂O)</label>
+<input id="nivelA" type="number">
+<div id="m3A" class="equivalente">—</div>
+
+<label>Nivel B (mmH₂O)</label>
+<input id="nivelB" type="number">
+<div id="m3B" class="equivalente">—</div>
+
+<button onclick="calcular()">Calcular</button>
+
+<div id="resultado" class="resultado">Total descargado: —</div>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
