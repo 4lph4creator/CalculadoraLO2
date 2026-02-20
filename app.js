@@ -33,11 +33,21 @@ const tabla = [
   { mm: 2410, m3: 17556 }
 ];
 
-// INTERPOLACIÓN LINEAL
+// LIMITES FISICOS
+const MIN_MM = tabla[0].mm;
+const MAX_MM = tabla[tabla.length - 1].mm;
+
+// INTERPOLACION
 function interpolar(mm) {
   if (mm === "" || isNaN(mm)) return null;
 
   mm = Number(mm);
+
+  // VALIDACION RANGO
+  if (mm < MIN_MM || mm > MAX_MM) return "OUT";
+
+  if (mm === MIN_MM) return tabla[0].m3;
+  if (mm === MAX_MM) return tabla[tabla.length - 1].m3;
 
   for (let i = 0; i < tabla.length - 1; i++) {
     let a = tabla[i];
@@ -48,65 +58,72 @@ function interpolar(mm) {
       return a.m3 + ratio * (b.m3 - a.m3);
     }
   }
-  return null;
 }
 
-// RANGO OPERACIONAL
-const MIN_MM = tabla[0].mm;
-const MAX_MM = tabla[tabla.length - 1].mm;
+// ELEMENTOS UI
+const nivelA = document.getElementById("nivelA");
+const nivelB = document.getElementById("nivelB");
+const m3A = document.getElementById("m3A");
+const m3B = document.getElementById("m3B");
+const resultado = document.getElementById("resultado");
+const saldoCampana = document.getElementById("saldoCampana");
 
-// VALIDACIÓN
-function validar(valor, campoSalida) {
-  if (valor === "") {
-    campoSalida.textContent = "—";
-    campoSalida.style.color = "";
-    return null;
-  }
+// SALDO INICIAL (editable por operador)
+let saldoInicial = 0;
 
-  let v = Number(valor);
-
-  if (v < MIN_MM || v > MAX_MM) {
-    campoSalida.textContent = "Fuera de rango";
-    campoSalida.style.color = "red";
-    return "error";
-  }
-
-  campoSalida.style.color = "";
-  return v;
+// SI EXISTE INPUT DE SALDO
+const saldoInput = document.querySelector("input#saldoInicial");
+if (saldoInput) {
+  saldoInput.addEventListener("input", () => {
+    saldoInicial = parseFloat(saldoInput.value) || 0;
+    saldoCampana.textContent = saldoInicial.toFixed(2) + " m³";
+  });
 }
 
-// CÁLCULO PRINCIPAL
+// CALCULO
 function actualizar() {
-  let inputA = document.getElementById("nivelA").value;
-  let inputB = document.getElementById("nivelB").value;
+  let A = nivelA.value;
+  let B = nivelB.value;
 
-  let campoA = document.getElementById("m3A");
-  let campoB = document.getElementById("m3B");
+  let valA = interpolar(A);
+  let valB = interpolar(B);
 
-  let A = validar(inputA, campoA);
-  let B = validar(inputB, campoB);
-
-  let m3A = A === "error" ? null : interpolar(A);
-  let m3B = B === "error" ? null : interpolar(B);
-
-  if (m3A !== null) {
-    campoA.textContent = `Equivalente: ${m3A.toFixed(2)} m³`;
+  // MOSTRAR A
+  if (valA === "OUT") {
+    m3A.textContent = "Fuera de rango";
+  } else if (valA === null) {
+    m3A.textContent = "—";
+  } else {
+    m3A.textContent = `Equivalente: ${valA.toFixed(2)} m³`;
   }
 
-  if (m3B !== null) {
-    campoB.textContent = `Equivalente: ${m3B.toFixed(2)} m³`;
+  // MOSTRAR B
+  if (valB === "OUT") {
+    m3B.textContent = "Fuera de rango";
+  } else if (valB === null) {
+    m3B.textContent = "—";
+  } else {
+    m3B.textContent = `Equivalente: ${valB.toFixed(2)} m³`;
   }
 
-  let resultado = document.getElementById("resultado");
-
-  if (m3A !== null && m3B !== null) {
-    let total = Math.abs(m3A - m3B);
+  // CALCULO DESCARGA
+  if (
+    valA !== null &&
+    valB !== null &&
+    valA !== "OUT" &&
+    valB !== "OUT"
+  ) {
+    let total = Math.abs(valA - valB);
     resultado.textContent = `Total descargado: ${total.toFixed(2)} m³`;
+
+    let saldoRestante = saldoInicial - total;
+    saldoCampana.textContent = saldoRestante.toFixed(2) + " m³";
+
   } else {
     resultado.textContent = "Total descargado: —";
   }
 }
 
 // EVENTOS
-document.getElementById("nivelA").addEventListener("input", actualizar);
-document.getElementById("nivelB").addEventListener("input", actualizar);
+nivelA.addEventListener("input", actualizar);
+nivelB.addEventListener("input", actualizar);
