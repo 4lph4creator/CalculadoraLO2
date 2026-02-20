@@ -1,6 +1,6 @@
-// ================================
+// ============================
 // TABLA REAL ISOTANQUE
-// ================================
+// ============================
 const tabla = [
   { mm: 0, m3: 0 },
   { mm: 2, m3: 4.2 },
@@ -35,108 +35,103 @@ const tabla = [
   { mm: 2410, m3: 17556 }
 ];
 
-// ================================
-// INTERPOLACION LINEAL
-// ================================
+// ============================
+// INTERPOLACIÓN
+// ============================
 function interpolar(mm) {
 
-  if (mm === "" || mm === null || mm === undefined) return null;
+  if (mm === "" || isNaN(mm)) return null;
 
   mm = Number(mm);
-  if (isNaN(mm)) return null;
 
-  // fuera de tabla
-  if (mm < tabla[0].mm || mm > tabla[tabla.length - 1].mm) return "OUT";
+  const min = tabla[0].mm;
+  const max = tabla[tabla.length - 1].mm;
 
-  // exacto
-  for (let i = 0; i < tabla.length; i++) {
-    if (tabla[i].mm === mm) return tabla[i].m3;
-  }
+  if (mm < min || mm > max) return "fuera";
 
-  // tramo
   for (let i = 0; i < tabla.length - 1; i++) {
+
     let a = tabla[i];
     let b = tabla[i + 1];
 
     if (mm >= a.mm && mm <= b.mm) {
+
       let ratio = (mm - a.mm) / (b.mm - a.mm);
       return a.m3 + ratio * (b.m3 - a.m3);
+
     }
   }
-
-  return null;
 }
 
-// ================================
-// DOM
-// ================================
-const saldoInput = document.getElementById("saldoInicial");
-const nivelA = document.getElementById("nivelA");
-const nivelB = document.getElementById("nivelB");
-
-const m3A = document.getElementById("m3A");
-const m3B = document.getElementById("m3B");
-const resultado = document.getElementById("resultado");
-const saldoCampana = document.getElementById("saldoRestante");
-
-// ================================
-// ACTUALIZAR
-// ================================
+// ============================
+// ACTUALIZAR UI
+// ============================
 function actualizar() {
 
-  const saldoInicial = parseFloat(saldoInput?.value || 0);
+  const saldoCampana = Number(document.getElementById("saldoCampana").value);
+  const A = document.getElementById("nivelA").value;
+  const B = document.getElementById("nivelB").value;
 
-  const valA = interpolar(nivelA?.value);
-  const valB = interpolar(nivelB?.value);
+  const m3A = interpolar(A);
+  const m3B = interpolar(B);
 
-  // ===== NIVEL A =====
-  if (valA === "OUT") {
-    m3A.textContent = "Nivel fuera de tabla";
-    m3A.style.color = "red";
-  } else if (valA !== null) {
-    m3A.textContent = `Equivalente: ${valA.toFixed(2)} m³`;
-    m3A.style.color = "";
+  const msg = document.getElementById("mensajeError");
+  msg.textContent = "";
+
+  // ----- VALIDACIÓN A -----
+  if (m3A === "fuera") {
+    document.getElementById("m3A").textContent = "Fuera de rango";
+    msg.textContent = "Nivel fuera de tabla";
+  } else if (m3A === null) {
+    document.getElementById("m3A").textContent = "—";
   } else {
-    m3A.textContent = "—";
+    document.getElementById("m3A").textContent = `Equivalente: ${m3A.toFixed(2)} m³`;
   }
 
-  // ===== NIVEL B =====
-  if (valB === "OUT") {
-    m3B.textContent = "Nivel fuera de tabla";
-    m3B.style.color = "red";
-  } else if (valB !== null) {
-    m3B.textContent = `Equivalente: ${valB.toFixed(2)} m³`;
-    m3B.style.color = "";
+  // ----- VALIDACIÓN B -----
+  if (m3B === "fuera") {
+    document.getElementById("m3B").textContent = "Fuera de rango";
+    msg.textContent = "Nivel fuera de tabla";
+  } else if (m3B === null) {
+    document.getElementById("m3B").textContent = "—";
   } else {
-    m3B.textContent = "—";
+    document.getElementById("m3B").textContent = `Equivalente: ${m3B.toFixed(2)} m³`;
   }
 
-  // ===== CALCULO DESCARGA =====
-  if (
-    valA !== null &&
-    valB !== null &&
-    valA !== "OUT" &&
-    valB !== "OUT"
-  ) {
+  // ----- CÁLCULO DESCARGA -----
+  if (typeof m3A === "number" && typeof m3B === "number") {
 
-    let total = Math.abs(valA - valB);
-    resultado.textContent = `Total descargado: ${total.toFixed(2)} m³`;
+    const total = Math.abs(m3A - m3B);
+    document.getElementById("resultado").textContent =
+      `Total descargado: ${total.toFixed(2)} m³`;
 
-    // saldo campaña (NO ES NIVEL)
-    if (!isNaN(saldoInicial)) {
-      let saldo = saldoInicial - total;
-      saldoCampana.textContent = `Saldo restante: ${saldo.toFixed(2)} m³`;
+    // saldo restante NO usa validación tabla
+    if (!isNaN(saldoCampana)) {
+      const restante = saldoCampana - total;
+      document.getElementById("saldoRestante").textContent =
+        `Saldo restante: ${restante.toFixed(2)} m³`;
     }
 
   } else {
-    resultado.textContent = "Total descargado: —";
-    saldoCampana.textContent = "Saldo restante: —";
+
+    document.getElementById("resultado").textContent = "Total descargado: —";
+    document.getElementById("saldoRestante").textContent = "Saldo restante: —";
+
   }
+
+  // ----- Mostrar saldo campaña -----
+  if (!isNaN(saldoCampana)) {
+    document.getElementById("saldoMostrado").textContent =
+      `Saldo inicial: ${saldoCampana.toFixed(2)} m³`;
+  } else {
+    document.getElementById("saldoMostrado").textContent = "—";
+  }
+
 }
 
-// ================================
+// ============================
 // EVENTOS
-// ================================
-saldoInput?.addEventListener("input", actualizar);
-nivelA?.addEventListener("input", actualizar);
-nivelB?.addEventListener("input", actualizar);
+// ============================
+document.getElementById("nivelA").addEventListener("input", actualizar);
+document.getElementById("nivelB").addEventListener("input", actualizar);
+document.getElementById("saldoCampana").addEventListener("input", actualizar);
