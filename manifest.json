@@ -1,26 +1,20 @@
 {
-  "id": "/CalculadoraLO2/",
   "name": "Calculadora LO2",
   "short_name": "LO2 Calc",
-  "start_url": "/CalculadoraLO2/",
-  "scope": "/CalculadoraLO2/",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#1976d2",
-  "orientation": "portrait",
+  "background_color": "#0b5fa5",
+  "theme_color": "#0b5fa5",
   "icons": [
     {
       "src": "icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
-
