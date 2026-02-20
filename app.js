@@ -108,6 +108,7 @@ function actualizar() {
 // REGISTRAR DESCARGA
 // =====================
 function registrar() {
+  console.log("CLICK REGISTRAR");
   const saldoInput = document.getElementById("saldoInicial").value;
 
   if (saldoActual === 0) {
