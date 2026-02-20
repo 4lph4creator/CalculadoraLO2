@@ -1,6 +1,6 @@
-// ==========================
-// TABLA REAL ISOTANQUE
-// ==========================
+// =====================
+// TABLA ISOTANQUE
+// =====================
 const tabla = [
   { mm: 0, m3: 0 },
   { mm: 2, m3: 4.2 },
@@ -35,9 +35,15 @@ const tabla = [
   { mm: 2410, m3: 17556 }
 ];
 
-// ==========================
+// =====================
+// ESTADO CAMPAÑA
+// =====================
+let saldoActual = 0;
+let ultimoTotal = 0;
+
+// =====================
 // INTERPOLACIÓN
-// ==========================
+// =====================
 function interpolar(mm) {
   if (mm === "" || isNaN(mm)) return null;
 
@@ -52,83 +58,84 @@ function interpolar(mm) {
     let b = tabla[i + 1];
 
     if (mm >= a.mm && mm <= b.mm) {
-      let ratio = (mm - a.mm) / (b.mm - a.mm);
-      return a.m3 + ratio * (b.m3 - a.m3);
+      let r = (mm - a.mm) / (b.mm - a.mm);
+      return a.m3 + r * (b.m3 - a.m3);
     }
   }
 }
 
-// ==========================
-// ELEMENTOS
-// ==========================
-const saldoInput = document.getElementById("saldoCampana");
-const nivelA = document.getElementById("nivelA");
-const nivelB = document.getElementById("nivelB");
-const m3A = document.getElementById("m3A");
-const m3B = document.getElementById("m3B");
-const resultado = document.getElementById("resultado");
-const saldoRestante = document.getElementById("saldoRestante");
-const registrarBtn = document.getElementById("registrar");
-
-// ==========================
-// ESTADO
-// ==========================
-let totalDescargaActual = 0;
-
-// ==========================
-// CÁLCULO
-// ==========================
+// =====================
+// ACTUALIZAR CALCULO
+// =====================
 function actualizar() {
-  let A = interpolar(nivelA.value);
-  let B = interpolar(nivelB.value);
+  const A = document.getElementById("nivelA").value;
+  const B = document.getElementById("nivelB").value;
+  const msg = document.getElementById("mensaje");
 
-  if (A === "fuera") {
-    m3A.textContent = "Nivel fuera de tabla";
-    m3A.style.color = "red";
-    return;
+  const m3A = interpolar(A);
+  const m3B = interpolar(B);
+
+  msg.textContent = "";
+
+  // NIVEL A
+  if (m3A === "fuera") {
+    document.getElementById("m3A").textContent = "Nivel fuera de tabla";
+  } else {
+    document.getElementById("m3A").textContent =
+      m3A !== null ? `Equivalente: ${m3A.toFixed(2)} m³` : "—";
   }
 
-  if (B === "fuera") {
-    m3B.textContent = "Nivel fuera de tabla";
-    m3B.style.color = "red";
-    return;
+  // NIVEL B
+  if (m3B === "fuera") {
+    document.getElementById("m3B").textContent = "Nivel fuera de tabla";
+  } else {
+    document.getElementById("m3B").textContent =
+      m3B !== null ? `Equivalente: ${m3B.toFixed(2)} m³` : "—";
   }
 
-  m3A.style.color = "";
-  m3B.style.color = "";
-
-  m3A.textContent = A !== null ? `Equivalente: ${A.toFixed(2)} m³` : "—";
-  m3B.textContent = B !== null ? `Equivalente: ${B.toFixed(2)} m³` : "—";
-
-  if (A !== null && B !== null) {
-    totalDescargaActual = Math.abs(A - B);
-    resultado.textContent = `Total descargado: ${totalDescargaActual.toFixed(2)} m³`;
+  // TOTAL
+  if (typeof m3A === "number" && typeof m3B === "number") {
+    ultimoTotal = Math.abs(m3A - m3B);
+    document.getElementById("resultado").textContent =
+      `Total descargado: ${ultimoTotal.toFixed(2)} m³`;
+  } else {
+    ultimoTotal = 0;
+    document.getElementById("resultado").textContent = "Total descargado: —";
   }
 }
 
-// ==========================
+// =====================
 // REGISTRAR DESCARGA
-// ==========================
-registrarBtn.addEventListener("click", () => {
-  let saldo = parseFloat(saldoInput.value);
+// =====================
+function registrar() {
+  const saldoInput = document.getElementById("saldoInicial").value;
 
-  if (isNaN(saldo)) return;
+  if (saldoActual === 0) {
+    saldoActual = Number(saldoInput);
+  }
 
-  saldo -= totalDescargaActual;
-  saldoInput.value = saldo.toFixed(2);
+  if (!ultimoTotal || ultimoTotal === 0) {
+    document.getElementById("mensaje").textContent =
+      "No hay descarga válida para registrar";
+    return;
+  }
 
-  saldoRestante.textContent = `Saldo restante: ${saldo.toFixed(2)} m³`;
+  saldoActual -= ultimoTotal;
 
-  nivelA.value = "";
-  nivelB.value = "";
-  m3A.textContent = "—";
-  m3B.textContent = "—";
-  resultado.textContent = "Total descargado: —";
-  totalDescargaActual = 0;
-});
+  document.getElementById("saldoRestante").textContent =
+    `Saldo restante: ${saldoActual.toFixed(2)} m³`;
 
-// ==========================
+  // limpiar niveles
+  document.getElementById("nivelA").value = "";
+  document.getElementById("nivelB").value = "";
+  document.getElementById("m3A").textContent = "—";
+  document.getElementById("m3B").textContent = "—";
+  document.getElementById("resultado").textContent = "Total descargado: —";
+}
+
+// =====================
 // EVENTOS
-// ==========================
-nivelA.addEventListener("input", actualizar);
-nivelB.addEventListener("input", actualizar);
+// =====================
+document.getElementById("nivelA").addEventListener("input", actualizar);
+document.getElementById("nivelB").addEventListener("input", actualizar);
+document.getElementById("registrar").addEventListener("click", registrar);
