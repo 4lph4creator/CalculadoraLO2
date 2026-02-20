@@ -33,14 +33,11 @@ const tabla = [
   { mm: 2410, m3: 17556 }
 ];
 
-// INTERPOLACIÓN LINEAL ENTRE PUNTOS + VALIDACIÓN DE RANGO
+// INTERPOLACIÓN LINEAL
 function interpolar(mm) {
   if (mm === "" || isNaN(mm)) return null;
 
   mm = Number(mm);
-
-  // VALIDACIÓN DE DOMINIO REAL
-  if (mm < tabla[0].mm || mm > tabla[tabla.length - 1].mm) return null;
 
   for (let i = 0; i < tabla.length - 1; i++) {
     let a = tabla[i];
@@ -51,31 +48,62 @@ function interpolar(mm) {
       return a.m3 + ratio * (b.m3 - a.m3);
     }
   }
-
   return null;
 }
 
-// CÁLCULO AUTOMÁTICO
+// RANGO OPERACIONAL
+const MIN_MM = tabla[0].mm;
+const MAX_MM = tabla[tabla.length - 1].mm;
+
+// VALIDACIÓN
+function validar(valor, campoSalida) {
+  if (valor === "") {
+    campoSalida.textContent = "—";
+    campoSalida.style.color = "";
+    return null;
+  }
+
+  let v = Number(valor);
+
+  if (v < MIN_MM || v > MAX_MM) {
+    campoSalida.textContent = "Fuera de rango";
+    campoSalida.style.color = "red";
+    return "error";
+  }
+
+  campoSalida.style.color = "";
+  return v;
+}
+
+// CÁLCULO PRINCIPAL
 function actualizar() {
-  let A = document.getElementById("nivelA").value;
-  let B = document.getElementById("nivelB").value;
+  let inputA = document.getElementById("nivelA").value;
+  let inputB = document.getElementById("nivelB").value;
 
-  let m3A = interpolar(A);
-  let m3B = interpolar(B);
+  let campoA = document.getElementById("m3A");
+  let campoB = document.getElementById("m3B");
 
-  document.getElementById("m3A").textContent =
-    m3A !== null ? `Equivalente: ${m3A.toFixed(2)} m³` : "—";
+  let A = validar(inputA, campoA);
+  let B = validar(inputB, campoB);
 
-  document.getElementById("m3B").textContent =
-    m3B !== null ? `Equivalente: ${m3B.toFixed(2)} m³` : "—";
+  let m3A = A === "error" ? null : interpolar(A);
+  let m3B = B === "error" ? null : interpolar(B);
+
+  if (m3A !== null) {
+    campoA.textContent = `Equivalente: ${m3A.toFixed(2)} m³`;
+  }
+
+  if (m3B !== null) {
+    campoB.textContent = `Equivalente: ${m3B.toFixed(2)} m³`;
+  }
+
+  let resultado = document.getElementById("resultado");
 
   if (m3A !== null && m3B !== null) {
     let total = Math.abs(m3A - m3B);
-    document.getElementById("resultado").textContent =
-      `Total descargado: ${total.toFixed(2)} m³`;
+    resultado.textContent = `Total descargado: ${total.toFixed(2)} m³`;
   } else {
-    document.getElementById("resultado").textContent =
-      "Total descargado: —";
+    resultado.textContent = "Total descargado: —";
   }
 }
 
