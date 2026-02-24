@@ -1,5 +1,5 @@
 // =====================
-// TABLA ISOTANQUE
+// TABLA
 // =====================
 const tabla = [
   { mm: 0, m3: 0 }, { mm: 2, m3: 4.2 }, { mm: 50, m3: 75.6 },
@@ -20,14 +20,14 @@ const tabla = [
 // =====================
 let ultimoTotal = 0;
 let stockBordo = Number(localStorage.getItem("stockBordo")) || 0;
+let historial = JSON.parse(localStorage.getItem("historialDescargas")) || [];
 
 // =====================
-// INTERPOLACIÓN
+// INTERPOLAR
 // =====================
 function interpolar(mm) {
   if (mm === "" || isNaN(mm)) return null;
   mm = Number(mm);
-
   if (mm < tabla[0].mm || mm > tabla[tabla.length - 1].mm) return "fuera";
 
   for (let i = 0; i < tabla.length - 1; i++) {
@@ -40,13 +40,29 @@ function interpolar(mm) {
 }
 
 // =====================
-// MOSTRAR STOCK AL ABRIR
+// RENDER HISTORIAL
+// =====================
+function renderHistorial() {
+  const cont = document.getElementById("historial");
+  cont.innerHTML = "";
+
+  historial.forEach(r => {
+    const div = document.createElement("div");
+    const fecha = r.fecha.slice(5).split("-").reverse().join("-");
+    div.textContent = `${fecha} — ${r.centro} — ${r.volumen.toFixed(0)} m³`;
+    cont.appendChild(div);
+  });
+}
+
+// =====================
+// LOAD
 // =====================
 window.addEventListener("load", () => {
   if (stockBordo > 0) {
     document.getElementById("saldoRestante").textContent =
       `Stock a bordo: ${stockBordo.toFixed(2)} m³`;
   }
+  renderHistorial();
 });
 
 // =====================
@@ -75,42 +91,55 @@ function actualizar() {
 }
 
 // =====================
-// REGISTRAR DESCARGA
+// REGISTRAR
 // =====================
 function registrar() {
   const cargaInicial = Number(document.getElementById("saldoInicial").value);
+  const centro = document.getElementById("centro").value.trim();
 
   if (!stockBordo) stockBordo = cargaInicial;
-
-  if (!ultimoTotal) return;
+  if (!ultimoTotal || !centro) return;
 
   stockBordo -= ultimoTotal;
   localStorage.setItem("stockBordo", stockBordo);
 
+  const registro = {
+    centro,
+    volumen: ultimoTotal,
+    fecha: new Date().toISOString().slice(0,10)
+  };
+
+  historial.push(registro);
+  localStorage.setItem("historialDescargas", JSON.stringify(historial));
+  renderHistorial();
+
   document.getElementById("saldoRestante").textContent =
     `Stock a bordo: ${stockBordo.toFixed(2)} m³`;
-  document.getElementById("saldoInicial").disabled = true;
 
+  document.getElementById("centro").value = "";
   document.getElementById("nivelA").value = "";
   document.getElementById("nivelB").value = "";
   document.getElementById("m3A").textContent = "—";
   document.getElementById("m3B").textContent = "—";
   document.getElementById("resultado").textContent = "Total descargado: —";
+
+  document.getElementById("saldoInicial").disabled = true;
 }
 
+// =====================
+// NUEVA CAMPAÑA
+// =====================
 function nuevaCampana() {
   localStorage.removeItem("stockBordo");
-  stockBordo = 0;
+  localStorage.removeItem("historialDescargas");
 
+  stockBordo = 0;
+  historial = [];
+
+  document.getElementById("saldoInicial").disabled = false;
   document.getElementById("saldoInicial").value = "";
   document.getElementById("saldoRestante").textContent = "Stock a bordo: —";
-  document.getElementById("saldoInicial").disabled = false;
-
-  document.getElementById("nivelA").value = "";
-  document.getElementById("nivelB").value = "";
-  document.getElementById("m3A").textContent = "—";
-  document.getElementById("m3B").textContent = "—";
-  document.getElementById("resultado").textContent = "Total descargado: —";
+  renderHistorial();
 }
 
 // =====================
