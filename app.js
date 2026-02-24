@@ -106,10 +106,11 @@ function registrar() {
   const cargaInicial = Number(document.getElementById("saldoInicial").value);
   const centro = document.getElementById("centro").value.trim();
 
- if (!stockBordo) {
-  stockBordo = cargaInicial;
-  localStorage.setItem("saldoInicial", cargaInicial);
-}
+  if (stockBordo === 0) {
+    stockBordo = cargaInicial;
+    localStorage.setItem("saldoInicial", cargaInicial);
+  }
+
   if (!ultimoTotal || !centro) return;
 
   if (ultimoTotal > stockBordo) {
