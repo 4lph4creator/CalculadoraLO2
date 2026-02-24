@@ -58,10 +58,20 @@ function renderHistorial() {
 // LOAD
 // =====================
 window.addEventListener("load", () => {
+
+  // restaurar carga total
+  const cargaGuardada = localStorage.getItem("saldoInicial");
+  if (cargaGuardada !== null) {
+    document.getElementById("saldoInicial").value = cargaGuardada;
+    document.getElementById("saldoInicial").disabled = true;
+  }
+
+  // restaurar stock
   if (stockBordo > 0) {
     document.getElementById("saldoRestante").textContent =
       `Stock a bordo: ${stockBordo.toFixed(2)} m³`;
   }
+
   renderHistorial();
 });
 
@@ -94,10 +104,19 @@ function actualizar() {
 // REGISTRAR
 // =====================
 function registrar() {
+
   const cargaInicial = Number(document.getElementById("saldoInicial").value);
   const centro = document.getElementById("centro").value.trim();
 
+  // guardar carga total solo una vez
+  if (!localStorage.getItem("saldoInicial")) {
+    localStorage.setItem("saldoInicial", cargaInicial);
+    document.getElementById("saldoInicial").disabled = true;
+  }
+
+  // inicializar stock primera vez
   if (!stockBordo) stockBordo = cargaInicial;
+
   if (!ultimoTotal || !centro) return;
 
   stockBordo -= ultimoTotal;
@@ -122,16 +141,16 @@ function registrar() {
   document.getElementById("m3A").textContent = "—";
   document.getElementById("m3B").textContent = "—";
   document.getElementById("resultado").textContent = "Total descargado: —";
-
-  document.getElementById("saldoInicial").disabled = true;
 }
 
 // =====================
 // NUEVA CAMPAÑA
 // =====================
 function nuevaCampana() {
+
   localStorage.removeItem("stockBordo");
   localStorage.removeItem("historialDescargas");
+  localStorage.removeItem("saldoInicial");
 
   stockBordo = 0;
   historial = [];
