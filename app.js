@@ -119,7 +119,12 @@ function registrar() {
 
   if (!ultimoTotal || !centro) return;
 
-  stockBordo -= ultimoTotal;
+  if (ultimoTotal > stockBordo) {
+  alert("La descarga supera el stock disponible");
+  return;
+}
+
+stockBordo -= ultimoTotal;
   localStorage.setItem("stockBordo", stockBordo);
 
   const registro = {
