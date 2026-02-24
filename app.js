@@ -104,6 +104,7 @@ function nuevaCampana() {
 
   document.getElementById("saldoInicial").value = "";
   document.getElementById("saldoRestante").textContent = "Stock a bordo: —";
+  document.getElementById("saldoInicial").disabled = false;
 
   document.getElementById("nivelA").value = "";
   document.getElementById("nivelB").value = "";
