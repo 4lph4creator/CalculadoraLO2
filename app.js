@@ -97,9 +97,24 @@ function registrar() {
   document.getElementById("resultado").textContent = "Total descargado: —";
 }
 
+function nuevaCampana() {
+  localStorage.removeItem("stockBordo");
+  stockBordo = 0;
+
+  document.getElementById("saldoInicial").value = "";
+  document.getElementById("saldoRestante").textContent = "Stock a bordo: —";
+
+  document.getElementById("nivelA").value = "";
+  document.getElementById("nivelB").value = "";
+  document.getElementById("m3A").textContent = "—";
+  document.getElementById("m3B").textContent = "—";
+  document.getElementById("resultado").textContent = "Total descargado: —";
+}
+
 // =====================
 // EVENTOS
 // =====================
 document.getElementById("nivelA").addEventListener("input", actualizar);
 document.getElementById("nivelB").addEventListener("input", actualizar);
 document.getElementById("registrar").addEventListener("click", registrar);
+document.getElementById("nuevaCampana").addEventListener("click", nuevaCampana);
