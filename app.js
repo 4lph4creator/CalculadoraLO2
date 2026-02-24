@@ -189,6 +189,27 @@ function exportarHistorial() {
   URL.revokeObjectURL(url);
 }
 // =====================
+// COPIAR HISTORIAL
+// =====================
+function copiarHistorial() {
+
+  if (!historial.length) {
+    alert("No hay descargas registradas");
+    return;
+  }
+
+  let texto = "Historial descargas LO2\n\n";
+
+  [...historial].reverse().forEach(r => {
+    const fecha = r.fecha.slice(5).split("-").reverse().join("-");
+    texto += `${fecha} - ${r.centro} - ${r.volumen.toFixed(0)} m3\n`;
+  });
+
+  navigator.clipboard.writeText(texto)
+    .then(() => alert("Historial copiado"))
+    .catch(() => alert("No se pudo copiar"));
+}
+// =====================
 // EVENTOS
 // =====================
 document.getElementById("nivelA").addEventListener("input", actualizar);
