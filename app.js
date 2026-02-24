@@ -161,6 +161,26 @@ function nuevaCampana() {
   renderHistorial();
 }
 
+function exportarHistorial() {
+  if (!historial.length) return;
+
+  let texto = "Historial descargas LO2\n\n";
+
+  historial.forEach(r => {
+    const fecha = r.fecha.slice(5).split("-").reverse().join("-");
+    texto += `${fecha} — ${r.centro} — ${r.volumen.toFixed(0)} m³\n`;
+  });
+
+  const blob = new Blob([texto], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "historial_LO2.txt";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
 // =====================
 // EVENTOS
 // =====================
