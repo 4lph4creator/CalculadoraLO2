@@ -108,23 +108,23 @@ function registrar() {
   const cargaInicial = Number(document.getElementById("saldoInicial").value);
   const centro = document.getElementById("centro").value.trim();
 
-  // guardar carga total solo una vez
-  if (!localStorage.getItem("saldoInicial")) {
-    localStorage.setItem("saldoInicial", cargaInicial);
-    document.getElementById("saldoInicial").disabled = true;
-  }
-
-  // inicializar stock primera vez
   if (!stockBordo) stockBordo = cargaInicial;
-
   if (!ultimoTotal || !centro) return;
 
+  // ✔ CONTROL EXCESO DESCARGA
   if (ultimoTotal > stockBordo) {
-  alert("La descarga supera el stock disponible");
-  return;
-}
 
-stockBordo -= ultimoTotal;
+    const confirmar = confirm(
+      `La descarga (${ultimoTotal.toFixed(2)} m³) supera el stock (${stockBordo.toFixed(2)} m³).\n\n` +
+      "¿Deseas cerrar el tanque y registrar la descarga restante?"
+    );
+
+    if (!confirmar) return;
+
+    ultimoTotal = stockBordo; // fuerza cierre exacto
+  }
+
+  stockBordo -= ultimoTotal;
   localStorage.setItem("stockBordo", stockBordo);
 
   const registro = {
@@ -146,6 +146,8 @@ stockBordo -= ultimoTotal;
   document.getElementById("m3A").textContent = "—";
   document.getElementById("m3B").textContent = "—";
   document.getElementById("resultado").textContent = "Total descargado: —";
+
+  document.getElementById("saldoInicial").disabled = true;
 }
 
 // =====================
