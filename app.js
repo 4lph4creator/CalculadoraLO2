@@ -46,7 +46,7 @@ function renderHistorial() {
   const cont = document.getElementById("historial");
   cont.innerHTML = "";
 
-  historial.forEach(r => {
+  [...historial].reverse().forEach(r => {
     const div = document.createElement("div");
     const fecha = r.fecha.slice(5).split("-").reverse().join("-");
     div.textContent = `${fecha} — ${r.centro} — ${r.volumen.toFixed(0)} m³`;
