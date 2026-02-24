@@ -89,6 +89,7 @@ function registrar() {
 
   document.getElementById("saldoRestante").textContent =
     `Stock a bordo: ${stockBordo.toFixed(2)} m³`;
+  document.getElementById("saldoInicial").disabled = true;
 
   document.getElementById("nivelA").value = "";
   document.getElementById("nivelB").value = "";
