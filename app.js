@@ -188,3 +188,4 @@ document.getElementById("nivelA").addEventListener("input", actualizar);
 document.getElementById("nivelB").addEventListener("input", actualizar);
 document.getElementById("registrar").addEventListener("click", registrar);
 document.getElementById("nuevaCampana").addEventListener("click", nuevaCampana);
+document.getElementById("exportar").addEventListener("click", exportarHistorial);
