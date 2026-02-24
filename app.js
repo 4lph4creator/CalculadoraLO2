@@ -59,14 +59,12 @@ function renderHistorial() {
 // =====================
 window.addEventListener("load", () => {
 
-  // restaurar carga total
   const cargaGuardada = localStorage.getItem("saldoInicial");
   if (cargaGuardada !== null) {
     document.getElementById("saldoInicial").value = cargaGuardada;
     document.getElementById("saldoInicial").disabled = true;
   }
 
-  // restaurar stock
   if (stockBordo > 0) {
     document.getElementById("saldoRestante").textContent =
       `Stock a bordo: ${stockBordo.toFixed(2)} m³`;
@@ -111,17 +109,13 @@ function registrar() {
   if (!stockBordo) stockBordo = cargaInicial;
   if (!ultimoTotal || !centro) return;
 
-  // ✔ CONTROL EXCESO DESCARGA
   if (ultimoTotal > stockBordo) {
-
     const confirmar = confirm(
       `La descarga (${ultimoTotal.toFixed(2)} m³) supera el stock (${stockBordo.toFixed(2)} m³).\n\n` +
       "¿Deseas cerrar el tanque y registrar la descarga restante?"
     );
-
     if (!confirmar) return;
-
-    ultimoTotal = stockBordo; // fuerza cierre exacto
+    ultimoTotal = stockBordo;
   }
 
   stockBordo -= ultimoTotal;
@@ -168,26 +162,6 @@ function nuevaCampana() {
   renderHistorial();
 }
 
-function exportarHistorial() {
-  if (!historial.length) return;
-
-  let texto = "Historial descargas LO2\n\n";
-
-  historial.forEach(r => {
-    const fecha = r.fecha.slice(5).split("-").reverse().join("-");
-    texto += `${fecha} — ${r.centro} — ${r.volumen.toFixed(0)} m³\n`;
-  });
-
-  const blob = new Blob([texto], { type: "text/plain" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "historial_LO2.txt";
-  a.click();
-
-  URL.revokeObjectURL(url);
-}
 // =====================
 // COPIAR HISTORIAL
 // =====================
@@ -209,6 +183,7 @@ function copiarHistorial() {
     .then(() => alert("Historial copiado"))
     .catch(() => alert("No se pudo copiar"));
 }
+
 // =====================
 // EVENTOS
 // =====================
@@ -216,4 +191,4 @@ document.getElementById("nivelA").addEventListener("input", actualizar);
 document.getElementById("nivelB").addEventListener("input", actualizar);
 document.getElementById("registrar").addEventListener("click", registrar);
 document.getElementById("nuevaCampana").addEventListener("click", nuevaCampana);
-document.getElementById("exportar").addEventListener("click", exportarHistorial);
+document.getElementById("exportar").addEventListener("click", copiarHistorial);
