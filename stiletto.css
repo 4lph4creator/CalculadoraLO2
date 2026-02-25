@@ -28,11 +28,12 @@ body{
 
 .logo{
     width:140px;
-    margin-bottom:10px;
+    margin-bottom:4px;
 }
 
 h1{
-    margin-bottom: 20px;
+    margin-top:4px;
+    margin-bottom:18px;
 }
 
 label{
