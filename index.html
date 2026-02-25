@@ -35,9 +35,15 @@
     <label>Centro</label>
     <input id="centro" type="text" placeholder="Ej: C. Contao">
 
+    <!-- ACCIONES OPERATIVAS -->
     <button id="registrar" class="btn">Registrar descarga</button>
-    <button id="nuevaCampana" class="btn">Nueva campaña</button>
     <button id="exportar" class="btn">Copiar historial</button>
+
+    <!-- ACCIONES ADMIN -->
+    <div class="adminRow">
+      <button id="rollback" class="btnSec">Deshacer</button>
+      <button id="nuevaCampana" class="btnSec">Nueva campaña</button>
+    </div>
     
     <h3>Historial descargas</h3>
     <div id="historial" class="equivalente"></div>
@@ -45,6 +51,11 @@
     <div id="mensaje" class="error"></div>
 
   </div>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
 
   <script src="app.js"></script>
 
