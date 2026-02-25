@@ -128,8 +128,17 @@ function registrar() {
   const registro = {
     centro,
     volumen: ultimoTotal,
-    fecha: new Date().toISOString().slice(0,10)
-  };
+    const hoy = new Date();
+const fechaLocal =
+  hoy.getFullYear() + "-" +
+  String(hoy.getMonth()+1).padStart(2,"0") + "-" +
+  String(hoy.getDate()).padStart(2,"0");
+
+const registro = {
+  centro,
+  volumen: ultimoTotal,
+  fecha: fechaLocal
+};
 
   historial.push(registro);
   localStorage.setItem("historialDescargas", JSON.stringify(historial));
