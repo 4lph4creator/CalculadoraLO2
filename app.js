@@ -220,3 +220,4 @@ document.getElementById("nivelB").addEventListener("input", actualizar);
 document.getElementById("registrar").addEventListener("click", registrar);
 document.getElementById("nuevaCampana").addEventListener("click", nuevaCampana);
 document.getElementById("exportar").addEventListener("click", copiarHistorial);
+document.getElementById("rollback").addEventListener("click", rollback);
