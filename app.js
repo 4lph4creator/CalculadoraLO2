@@ -187,7 +187,31 @@ function copiarHistorial() {
     .then(() => alert("Historial copiado"))
     .catch(() => alert("No se pudo copiar"));
 }
+// =====================
+// ROLLBACK ULTIMA DESCARGA
+// =====================
+function rollback() {
 
+  if (!historial.length) {
+    alert("No hay descargas para deshacer");
+    return;
+  }
+
+  const confirmar = confirm("¿Deshacer última descarga?");
+  if (!confirmar) return;
+
+  const ultimo = historial.pop();
+
+  stockBordo += ultimo.volumen;
+
+  localStorage.setItem("stockBordo", stockBordo);
+  localStorage.setItem("historialDescargas", JSON.stringify(historial));
+
+  document.getElementById("saldoRestante").textContent =
+    `Stock a bordo: ${stockBordo.toFixed(2)} m³`;
+
+  renderHistorial();
+}
 // =====================
 // EVENTOS
 // =====================
