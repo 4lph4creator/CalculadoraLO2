@@ -124,3 +124,27 @@ button:hover{
     font-size:13px;
     color:#6b7280;
 }
+.adminRow{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.adminRow button{
+    width:auto;      /* rompe el 100% global */
+    flex:1;          /* reparte espacio */
+}
+
+.btnSec{
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#9ca3af;
+    color:white;
+    font-size:14px;
+    cursor:pointer;
+}
+
+.btnSec:hover{
+    background:#6b7280;
+}
