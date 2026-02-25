@@ -48,7 +48,7 @@ function renderHistorial() {
 
   [...historial].reverse().forEach(r => {
     const div = document.createElement("div");
-    const fecha = r.fecha.slice(5).split("-").reverse().join("-");
+    const fecha = r.fecha.split("-").reverse().join("-");
     div.textContent = `${fecha} — ${r.centro} — ${r.volumen.toFixed(0)} m³`;
     cont.appendChild(div);
   });
@@ -115,8 +115,7 @@ function registrar() {
 
   if (ultimoTotal > stockBordo) {
     const confirmar = confirm(
-      `La descarga (${ultimoTotal.toFixed(2)} m³) supera el stock (${stockBordo.toFixed(2)} m³).\n\n` +
-      "¿Deseas cerrar el tanque y registrar la descarga restante?"
+      `La descarga (${ultimoTotal.toFixed(2)} m³) supera el stock (${stockBordo.toFixed(2)} m³).\n\n¿Cerrar tanque?`
     );
     if (!confirmar) return;
     ultimoTotal = stockBordo;
@@ -125,26 +124,18 @@ function registrar() {
   stockBordo -= ultimoTotal;
   localStorage.setItem("stockBordo", stockBordo);
 
+  // ✔ FECHA LOCAL CORRECTA
+  const hoy = new Date();
+  const fechaLocal =
+    hoy.getFullYear() + "-" +
+    String(hoy.getMonth()+1).padStart(2,"0") + "-" +
+    String(hoy.getDate()).padStart(2,"0");
+
   const registro = {
     centro,
     volumen: ultimoTotal,
-    const hoy = new Date();
-const fechaLocal =
-  hoy.getFullYear() + "-" +
-  String(hoy.getMonth()+1).padStart(2,"0") + "-" +
-  String(hoy.getDate()).padStart(2,"0");
-
-const hoy = new Date();
-const fechaLocal =
-  hoy.getFullYear() + "-" +
-  String(hoy.getMonth()+1).padStart(2,"0") + "-" +
-  String(hoy.getDate()).padStart(2,"0");
-
-const registro = {
-  centro,
-  volumen: ultimoTotal,
-  fecha: fechaLocal
-};
+    fecha: fechaLocal
+  };
 
   historial.push(registro);
   localStorage.setItem("historialDescargas", JSON.stringify(historial));
@@ -167,7 +158,6 @@ const registro = {
 // NUEVA CAMPAÑA
 // =====================
 function nuevaCampana() {
-
   localStorage.removeItem("stockBordo");
   localStorage.removeItem("historialDescargas");
   localStorage.removeItem("saldoInicial");
@@ -185,38 +175,28 @@ function nuevaCampana() {
 // COPIAR HISTORIAL
 // =====================
 function copiarHistorial() {
+  if (!historial.length) return alert("No hay descargas");
 
-  if (!historial.length) {
-    alert("No hay descargas registradas");
-    return;
-  }
-
-  let texto = "Historial descargas LO2\n\n";
+  let texto = "Historial descargas LOX\n\n";
 
   [...historial].reverse().forEach(r => {
-    const fecha = r.fecha.slice(5).split("-").reverse().join("-");
+    const fecha = r.fecha.split("-").reverse().join("-");
     texto += `${fecha} - ${r.centro} - ${r.volumen.toFixed(0)} m3\n`;
   });
 
   navigator.clipboard.writeText(texto)
-    .then(() => alert("Historial copiado"))
-    .catch(() => alert("No se pudo copiar"));
+    .then(()=>alert("Historial copiado"));
 }
+
 // =====================
-// ROLLBACK ULTIMA DESCARGA
+// ROLLBACK
 // =====================
 function rollback() {
+  if (!historial.length) return alert("Nada que deshacer");
 
-  if (!historial.length) {
-    alert("No hay descargas para deshacer");
-    return;
-  }
-
-  const confirmar = confirm("¿Deshacer última descarga?");
-  if (!confirmar) return;
+  if (!confirm("¿Deshacer última descarga?")) return;
 
   const ultimo = historial.pop();
-
   stockBordo += ultimo.volumen;
 
   localStorage.setItem("stockBordo", stockBordo);
@@ -227,6 +207,7 @@ function rollback() {
 
   renderHistorial();
 }
+
 // =====================
 // EVENTOS
 // =====================
