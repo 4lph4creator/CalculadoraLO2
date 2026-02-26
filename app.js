@@ -21,6 +21,15 @@ const tabla = [
 let ultimoTotal = 0;
 let stockPorIsotanque = JSON.parse(localStorage.getItem("stockPorIsotanque")) || [0, 0, 0, 0];
 let historial = JSON.parse(localStorage.getItem("historialDescargas")) || [];
+let cargaTotalInicial = Number(localStorage.getItem("cargaTotalInicial")) || 0;
+
+// Compatibilidad con versiones anteriores
+if (!localStorage.getItem("stockPorIsotanque")) {
+  const stockLegacy = Number(localStorage.getItem("stockBordo")) || 0;
+  if (stockLegacy > 0) {
+    stockPorIsotanque = [stockLegacy, 0, 0, 0];
+  }
+}
 
 // Compatibilidad con versiones anteriores
 if (!localStorage.getItem("stockPorIsotanque")) {
@@ -56,6 +65,20 @@ function isotanqueActualIndex() {
   return Number(document.getElementById("isotanqueSelect").value) - 1;
 }
 
+function sumaCargasIngresadas() {
+  return (
+    (Number(document.getElementById("saldoIso1").value) || 0) +
+    (Number(document.getElementById("saldoIso2").value) || 0) +
+    (Number(document.getElementById("saldoIso3").value) || 0) +
+    (Number(document.getElementById("saldoIso4").value) || 0)
+  );
+}
+
+function actualizarCargaTotalInicialUI(valor) {
+  const input = document.getElementById("cargaTotalInicial");
+  input.value = valor > 0 ? valor.toFixed(2) : "";
+}
+
 function actualizarStockUI() {
   const idx = isotanqueActualIndex();
   const stockActual = stockPorIsotanque[idx] || 0;
@@ -70,6 +93,12 @@ function bloquearCargasInicialesSiCorresponde() {
   ["saldoIso1", "saldoIso2", "saldoIso3", "saldoIso4"].forEach(id => {
     document.getElementById(id).disabled = hayStock;
   });
+  document.getElementById("cargaTotalInicial").disabled = hayStock;
+}
+
+function previsualizarCargaTotalInicial() {
+  if (totalBordo() > 0) return;
+  actualizarCargaTotalInicialUI(sumaCargasIngresadas());
 }
 
 function limpiarCalculadora() {
@@ -111,6 +140,12 @@ window.addEventListener("load", () => {
     input.value = valor > 0 ? valor : "";
   });
 
+  if (!cargaTotalInicial && totalBordo() > 0) {
+    cargaTotalInicial = totalBordo();
+    localStorage.setItem("cargaTotalInicial", cargaTotalInicial.toString());
+  }
+
+  actualizarCargaTotalInicialUI(cargaTotalInicial || sumaCargasIngresadas());
   bloquearCargasInicialesSiCorresponde();
   actualizarStockUI();
   renderHistorial();
@@ -167,7 +202,11 @@ function inicializarCargasSiHaceFalta() {
   }
 
   stockPorIsotanque = cargas;
+  cargaTotalInicial = total;
   persistirStock();
+  localStorage.setItem("cargaTotalInicial", cargaTotalInicial.toString());
+
+  actualizarCargaTotalInicialUI(cargaTotalInicial);
   bloquearCargasInicialesSiCorresponde();
   actualizarStockUI();
   return true;
@@ -247,15 +286,21 @@ function nuevaCampana() {
   localStorage.removeItem("stockPorIsotanque");
   localStorage.removeItem("stockBordo");
   localStorage.removeItem("historialDescargas");
+  localStorage.removeItem("cargaTotalInicial");
 
   stockPorIsotanque = [0, 0, 0, 0];
   historial = [];
+  cargaTotalInicial = 0;
 
   ["saldoIso1", "saldoIso2", "saldoIso3", "saldoIso4"].forEach(id => {
     const input = document.getElementById(id);
     input.disabled = false;
     input.value = "";
   });
+
+  const inputTotal = document.getElementById("cargaTotalInicial");
+  inputTotal.disabled = false;
+  inputTotal.value = "";
 
   actualizarStockUI();
   limpiarCalculadora();
@@ -310,3 +355,8 @@ document.getElementById("descargaCompleta").addEventListener("click", descargarI
 document.getElementById("nuevaCampana").addEventListener("click", nuevaCampana);
 document.getElementById("exportar").addEventListener("click", copiarHistorial);
 document.getElementById("rollback").addEventListener("click", rollback);
+
+document.getElementById("saldoIso1").addEventListener("input", previsualizarCargaTotalInicial);
+document.getElementById("saldoIso2").addEventListener("input", previsualizarCargaTotalInicial);
+document.getElementById("saldoIso3").addEventListener("input", previsualizarCargaTotalInicial);
+document.getElementById("saldoIso4").addEventListener("input", previsualizarCargaTotalInicial);
