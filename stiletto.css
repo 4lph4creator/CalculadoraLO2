@@ -6,7 +6,7 @@ body{
     display:flex;
     justify-content:center;
     align-items:flex-start;
-    padding:16px 0 20px;
+    padding:16px 0;
     min-height:100vh;
 }
 
@@ -15,7 +15,7 @@ body{
     max-width:94vw;
     display:flex;
     flex-direction:column;
-    gap:16px;
+    gap:12px;
 }
 
 .logo{
@@ -24,37 +24,37 @@ body{
 }
 
 h1{
-    margin:0;
+    margin:0 0 2px 0;
     text-align:center;
 }
 
 h2{
-    margin:0 0 8px 0;
-    font-size:15px;
-    letter-spacing:0.2px;
+    margin:0 0 10px 0;
+    font-size:16px;
     color:#1e293b;
 }
 
 h3{
-    margin:14px 0 8px 0;
+    margin:16px 0 8px 0;
     text-align:left;
 }
 
 .cardSection{
     background: rgba(255,255,255,0.93);
-    padding:12px;
+    padding:14px;
     border-radius:14px;
     box-shadow:0 8px 24px rgba(0,0,0,0.16);
 }
 
 .zonaOperacion{
+    padding:16px;
     box-shadow:0 10px 28px rgba(27,117,187,0.26);
 }
 
 label{
     display:block;
     text-align:left;
-    margin-top:10px;
+    margin-top:11px;
     font-weight:bold;
     font-size:14px;
 }
@@ -65,7 +65,7 @@ select{
     padding:10px;
     border-radius:8px;
     border:1px solid #cbd5e1;
-    margin-top:4px;
+    margin-top:5px;
     font-size:16px;
     box-sizing:border-box;
     background:white;
@@ -173,6 +173,24 @@ input[readonly]{
     box-shadow:0 0 0 3px rgba(27,117,187,0.2);
 }
 
+.stockPrincipal{
+    margin-top:10px;
+    padding:12px;
+    border-radius:12px;
+    background:#0f172a;
+    color:#f8fafc;
+    font-size:20px;
+    font-weight:700;
+    text-align:center;
+}
+
+.stockSecundario{
+    margin-top:6px;
+    font-size:13px;
+    color:#334155;
+    text-align:center;
+}
+
 button{
     margin-top:12px;
     width:100%;
@@ -191,8 +209,8 @@ button{
     font-weight:700;
 }
 
-.btnPrimary:hover{
-    background:#155f96;
+#nuevaCampana{
+    background:#64748b;
 }
 
 .btnSecondary{
@@ -202,19 +220,39 @@ button{
     font-weight:700;
 }
 
-.btnSecondary:hover{
-    background:#d8ecfa;
+.resultado{
+    margin-top:14px;
+    padding:10px;
+    background:rgba(255,255,255,0.75);
+    border-radius:10px;
+    font-size:16px;
+    text-align:center;
+    color:#0f172a;
+    border:1px solid rgba(148,163,184,0.4);
 }
 
-.btnTertiary{
-    border:1px solid #cbd5e1;
-    background:#f8fafc;
-    color:#334155;
-    font-size:14px;
+.panelConfig summary{
+    cursor:pointer;
+    list-style:none;
+    font-weight:700;
+    color:#0f172a;
 }
 
-.btnTertiary:hover{
-    background:#f1f5f9;
+.panelConfig summary::-webkit-details-marker{
+    display:none;
+}
+
+.panelConfig summary::after{
+    content:"▾";
+    float:right;
+}
+
+.panelConfig[open] summary::after{
+    content:"▴";
+}
+
+.configBody{
+    margin-top:8px;
 }
 
 .adminRow{
@@ -228,40 +266,11 @@ button{
     flex:1;
 }
 
-.btnSec,
-.btnUtility{
-    border:1px solid #d1d5db;
-    background:#e5e7eb;
-    color:#374151;
+.btnSec{
+    padding:10px;
+    background:#9ca3af;
+    color:white;
     font-size:14px;
-    padding:10px;
-}
-
-.btnSec:hover,
-.btnUtility:hover{
-    background:#d1d5db;
-}
-
-.resultado{
-    margin-top:14px;
-    padding:10px;
-    background:rgba(255,255,255,0.78);
-    border-radius:10px;
-    font-size:16px;
-    text-align:center;
-    color:#0f172a;
-    border:1px solid rgba(148,163,184,0.45);
-}
-
-.panelConfig summary{
-    cursor:pointer;
-    list-style:none;
-    font-weight:700;
-    color:#0f172a;
-}
-
-.panelConfig summary::-webkit-details-marker{
-    display:none;
 }
 
 .panelConfig summary::after{
@@ -290,19 +299,15 @@ button{
     text-align:center;
 }
 
-
-.stock-flash-success{
-    animation: stockFlashSuccess 0.42s ease;
+.historial{
+    max-height:160px;
+    overflow:auto;
+    padding-right:4px;
 }
 
-@keyframes stockFlashSuccess{
-    0%{ box-shadow: inset 0 0 0 0 rgba(34,197,94,0); }
-    30%{ box-shadow: inset 0 0 0 999px rgba(34,197,94,0.22); }
-    100%{ box-shadow: inset 0 0 0 0 rgba(34,197,94,0); }
-}
-
-.btnSuccessState{
-    background:#15803d !important;
-    border-color:#15803d !important;
-    color:#ffffff !important;
+.error{
+    min-height:18px;
+    color:#b91c1c;
+    font-size:13px;
+    text-align:center;
 }

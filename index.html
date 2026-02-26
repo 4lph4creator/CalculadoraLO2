@@ -27,13 +27,7 @@
         <option value="4">Isotanque 4</option>
       </select>
 
-      <div class="stockDisplay" role="status" aria-live="polite">
-        <div class="stockDisplayLabel">Stock activo</div>
-        <div class="stockDisplayValueRow">
-          <div id="stockIsotanque" class="stockPrincipal">Stock isotanque seleccionado: —</div>
-          <span class="stockDisplayUnit">m³</span>
-        </div>
-      </div>
+      <div id="stockIsotanque" class="stockPrincipal">Stock isotanque seleccionado: —</div>
       <div id="saldoRestante" class="stockSecundario">Stock a bordo: —</div>
 
       <label for="centro">Centro</label>
@@ -44,22 +38,18 @@
     <section class="panel cardSection zonaOperacion">
       <h2>Zona de operación</h2>
 
-      <div class="measurementModule">
-        <label for="nivelA" class="measurementLabel">Nivel A (mmH₂O)</label>
-        <input id="nivelA" type="number" class="measurementInput" placeholder="0">
-        <div id="m3A" class="equivalente">—</div>
-      </div>
+      <label for="nivelA">Nivel A (mmH₂O)</label>
+      <input id="nivelA" type="number">
+      <div id="m3A" class="equivalente">—</div>
 
-      <div class="measurementModule">
-        <label for="nivelB" class="measurementLabel">Nivel B (mmH₂O)</label>
-        <input id="nivelB" type="number" class="measurementInput" placeholder="0">
-        <div id="m3B" class="equivalente">—</div>
-      </div>
+      <label for="nivelB">Nivel B (mmH₂O)</label>
+      <input id="nivelB" type="number">
+      <div id="m3B" class="equivalente">—</div>
 
       <div id="resultado" class="resultado">Total descargado: —</div>
 
-      <button id="registrar" class="btn btnPrimary">Registrar descarga por tramo</button>
-      <button id="descargaCompleta" class="btn btnSecondary">Descargar isotanque completo</button>
+      <button id="registrar" class="btn">Registrar descarga por tramo</button>
+      <button id="descargaCompleta" class="btn">Descargar isotanque completo</button>
     </section>
 
     <!-- 3) CAMPAIGN CONFIGURATION -->
@@ -88,11 +78,11 @@
     <section class="panel cardSection panelControl">
       <h2>Control e historial</h2>
 
-      <button id="exportar" class="btn btnTertiary">Copiar historial</button>
+      <button id="exportar" class="btn">Copiar historial</button>
 
       <div class="adminRow">
-        <button id="rollback" class="btnSec btnUtility">Deshacer</button>
-        <button id="nuevaCampana" class="btnSec btnUtility">Nueva campaña</button>
+        <button id="rollback" class="btnSec">Deshacer</button>
+        <button id="nuevaCampana" class="btnSec">Nueva campaña</button>
       </div>
 
       <h3>Historial descargas</h3>

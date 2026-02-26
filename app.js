@@ -93,33 +93,6 @@ function previsualizarCargaTotalInicial() {
   actualizarCargaTotalInicialUI(sumaCargasIngresadas());
 }
 
-
-function feedbackRegistro(tipo) {
-  const display = document.querySelector(".stockDisplay") || document.getElementById("stockIsotanque");
-  if (display) {
-    display.classList.remove("stock-flash-success");
-    void display.offsetWidth;
-    display.classList.add("stock-flash-success");
-    setTimeout(() => display.classList.remove("stock-flash-success"), 420);
-  }
-
-  if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
-    navigator.vibrate(40);
-  }
-
-  if (tipo === "tramo") {
-    const btn = document.getElementById("registrar");
-    if (!btn) return;
-    const original = btn.textContent;
-    btn.textContent = "✓ Registrado";
-    btn.classList.add("btnSuccessState");
-    setTimeout(() => {
-      btn.textContent = original;
-      btn.classList.remove("btnSuccessState");
-    }, 600);
-  }
-}
-
 function limpiarCalculadora() {
   ultimoTotal = 0;
   document.getElementById("nivelA").value = "";
@@ -271,7 +244,6 @@ function registrarDescarga(volumen, tipo) {
 
   renderHistorial();
   actualizarStockUI();
-  feedbackRegistro(tipo);
 
   document.getElementById("centro").value = "";
   limpiarCalculadora();
