@@ -83,7 +83,94 @@ input[readonly]{
     font-size:13px;
     color:#555;
     text-align:left;
-    margin-top:3px;
+    margin-top:4px;
+}
+
+/* DIGITAL DISPLAY */
+.stockDisplay{
+    margin-top:10px;
+    background:#0b1220;
+    border:1px solid #1e293b;
+    border-radius:12px;
+    padding:10px;
+}
+
+.stockDisplayLabel{
+    color:#94a3b8;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+    margin-bottom:6px;
+}
+
+.stockDisplayValueRow{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:8px;
+}
+
+.stockPrincipal{
+    color:#e2e8f0;
+    font-family:"Courier New", monospace;
+    font-size:22px;
+    font-weight:700;
+    line-height:1.1;
+    margin:0;
+    flex:1;
+    word-break:break-word;
+}
+
+.stockDisplayUnit{
+    color:#94a3b8;
+    font-size:12px;
+    line-height:1.2;
+    padding-bottom:2px;
+}
+
+.stockSecundario{
+    margin-top:6px;
+    font-size:12px;
+    color:#334155;
+    text-align:center;
+}
+
+/* MEASUREMENT MODULES */
+.measurementModule{
+    margin-top:8px;
+    background:#f8fafc;
+    border:1px solid #dbe5ef;
+    border-radius:12px;
+    padding:8px;
+}
+
+.measurementLabel{
+    margin-top:0;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    color:#334155;
+}
+
+.measurementInput{
+    height:60px;
+    font-size:30px;
+    font-weight:700;
+    text-align:center;
+    border:1px solid #94a3b8;
+    border-radius:10px;
+    padding:8px 10px;
+}
+
+.measurementInput::placeholder{
+    color:#94a3b8;
+    font-size:24px;
+}
+
+.measurementInput:focus{
+    outline:none;
+    border-color:#1b75bb;
+    box-shadow:0 0 0 3px rgba(27,117,187,0.2);
 }
 
 .stockPrincipal{
@@ -108,25 +195,29 @@ button{
     margin-top:12px;
     width:100%;
     padding:12px;
-    border:none;
     border-radius:8px;
-    background:#1b75bb;
-    color:white;
     font-size:16px;
     cursor:pointer;
     transition:0.15s ease;
 }
 
-button:hover{
-    background:#155f96;
+/* BUTTON HIERARCHY */
+.btnPrimary{
+    border:none;
+    background:#1b75bb;
+    color:white;
+    font-weight:700;
 }
 
 #nuevaCampana{
     background:#64748b;
 }
 
-#nuevaCampana:hover{
-    background:#475569;
+.btnSecondary{
+    border:1px solid #1b75bb;
+    background:#eaf4fb;
+    color:#155f96;
+    font-weight:700;
 }
 
 .resultado{
@@ -182,8 +273,30 @@ button:hover{
     font-size:14px;
 }
 
-.btnSec:hover{
-    background:#6b7280;
+.panelConfig summary::after{
+    content:"▾";
+    float:right;
+}
+
+.panelConfig[open] summary::after{
+    content:"▴";
+}
+
+.configBody{
+    margin-top:8px;
+}
+
+.historial{
+    max-height:160px;
+    overflow:auto;
+    padding-right:4px;
+}
+
+.error{
+    min-height:18px;
+    color:#b91c1c;
+    font-size:13px;
+    text-align:center;
 }
 
 .historial{
