@@ -16,10 +16,28 @@
     <img src="img/logo_transparent.png" class="logo">
 
     <h1>Calculadora LOX</h1>
-  
 
-    <label>Carga total (m³)</label>
-    <input id="saldoInicial" type="number">
+    <label for="isotanqueSelect">Isotanque</label>
+    <select id="isotanqueSelect">
+      <option value="1">Isotanque 1</option>
+      <option value="2">Isotanque 2</option>
+      <option value="3">Isotanque 3</option>
+      <option value="4">Isotanque 4</option>
+    </select>
+
+    <div id="stockIsotanque" class="resultado">Stock isotanque seleccionado: —</div>
+
+    <label>Carga inicial Isotanque 1 (m³)</label>
+    <input id="saldoIso1" type="number">
+
+    <label>Carga inicial Isotanque 2 (m³)</label>
+    <input id="saldoIso2" type="number">
+
+    <label>Carga inicial Isotanque 3 (m³)</label>
+    <input id="saldoIso3" type="number">
+
+    <label>Carga inicial Isotanque 4 (m³)</label>
+    <input id="saldoIso4" type="number">
 
     <label>Nivel A (mmH₂O)</label>
     <input id="nivelA" type="number">
@@ -35,16 +53,15 @@
     <label>Centro</label>
     <input id="centro" type="text" placeholder="Ej: C. Contao">
 
-    <!-- ACCIONES OPERATIVAS -->
-    <button id="registrar" class="btn">Registrar descarga</button>
+    <button id="registrar" class="btn">Registrar descarga por tramo</button>
+    <button id="descargaCompleta" class="btn">Descargar isotanque completo</button>
     <button id="exportar" class="btn">Copiar historial</button>
 
-    <!-- ACCIONES ADMIN -->
     <div class="adminRow">
       <button id="rollback" class="btnSec">Deshacer</button>
       <button id="nuevaCampana" class="btnSec">Nueva campaña</button>
     </div>
-    
+
     <h3>Historial descargas</h3>
     <div id="historial" class="equivalente"></div>
 
