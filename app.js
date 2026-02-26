@@ -31,14 +31,6 @@ if (!localStorage.getItem("stockPorIsotanque")) {
   }
 }
 
-// Compatibilidad con versiones anteriores
-if (!localStorage.getItem("stockPorIsotanque")) {
-  const stockLegacy = Number(localStorage.getItem("stockBordo")) || 0;
-  if (stockLegacy > 0) {
-    stockPorIsotanque = [stockLegacy, 0, 0, 0];
-  }
-}
-
 // =====================
 // INTERPOLAR
 // =====================

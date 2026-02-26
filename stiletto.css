@@ -3,40 +3,60 @@ body{
     font-family: Arial, Helvetica, sans-serif;
     background: url("img/bg.png") no-repeat center center fixed;
     background-size: cover;
-
     display:flex;
     justify-content:center;
     align-items:flex-start;
-    padding:20px 0;
+    padding:16px 0;
     min-height:100vh;
 }
 
-.card{
-    background: rgba(255,255,255,0.92);
-    padding:30px;
-    border-radius:16px;
+.layout{
     width:380px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.2);
-    text-align:center;
-    max-height:90vh;
-    overflow:auto;
+    max-width:94vw;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
 }
 
 .logo{
-    width:140px;
-    margin-bottom:4px;
+    width:130px;
+    margin:0 auto;
 }
 
 h1{
-    margin-top:4px;
-    margin-bottom:18px;
+    margin:0 0 2px 0;
+    text-align:center;
+}
+
+h2{
+    margin:0 0 10px 0;
+    font-size:16px;
+    color:#1e293b;
+}
+
+h3{
+    margin:16px 0 8px 0;
+    text-align:left;
+}
+
+.cardSection{
+    background: rgba(255,255,255,0.93);
+    padding:14px;
+    border-radius:14px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.16);
+}
+
+.zonaOperacion{
+    padding:16px;
+    box-shadow:0 10px 28px rgba(27,117,187,0.26);
 }
 
 label{
     display:block;
     text-align:left;
-    margin-top:15px;
+    margin-top:11px;
     font-weight:bold;
+    font-size:14px;
 }
 
 input,
@@ -44,14 +64,15 @@ select{
     width:100%;
     padding:10px;
     border-radius:8px;
-    border:1px solid #ccc;
+    border:1px solid #cbd5e1;
     margin-top:5px;
     font-size:16px;
-    box-sizing: border-box;
+    box-sizing:border-box;
     background:white;
 }
 
-input:disabled{
+input:disabled,
+input[readonly]{
     background:#f3f4f6;
     color:#6b7280;
     border:1px solid #d1d5db;
@@ -65,8 +86,26 @@ input:disabled{
     margin-top:3px;
 }
 
+.stockPrincipal{
+    margin-top:10px;
+    padding:12px;
+    border-radius:12px;
+    background:#0f172a;
+    color:#f8fafc;
+    font-size:20px;
+    font-weight:700;
+    text-align:center;
+}
+
+.stockSecundario{
+    margin-top:6px;
+    font-size:13px;
+    color:#334155;
+    text-align:center;
+}
+
 button{
-    margin-top:18px;
+    margin-top:12px;
     width:100%;
     padding:12px;
     border:none;
@@ -90,22 +129,45 @@ button:hover{
     background:#475569;
 }
 
-.resultado {
-    margin-top: 18px;
-    padding: 10px;
-    background: rgba(255,255,255,0.7);
-    border-radius: 12px;
-    font-size: 15px;
-    text-align: center;
-    color: #1e293b;
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255,255,255,0.5);
+.resultado{
+    margin-top:14px;
+    padding:10px;
+    background:rgba(255,255,255,0.75);
+    border-radius:10px;
+    font-size:16px;
+    text-align:center;
+    color:#0f172a;
+    border:1px solid rgba(148,163,184,0.4);
+}
+
+.panelConfig summary{
+    cursor:pointer;
+    list-style:none;
+    font-weight:700;
+    color:#0f172a;
+}
+
+.panelConfig summary::-webkit-details-marker{
+    display:none;
+}
+
+.panelConfig summary::after{
+    content:"▾";
+    float:right;
+}
+
+.panelConfig[open] summary::after{
+    content:"▴";
+}
+
+.configBody{
+    margin-top:8px;
 }
 
 .adminRow{
     display:flex;
     gap:10px;
-    margin-top:15px;
+    margin-top:8px;
 }
 
 .adminRow button{
@@ -115,14 +177,24 @@ button:hover{
 
 .btnSec{
     padding:10px;
-    border:none;
-    border-radius:8px;
     background:#9ca3af;
     color:white;
     font-size:14px;
-    cursor:pointer;
 }
 
 .btnSec:hover{
     background:#6b7280;
+}
+
+.historial{
+    max-height:160px;
+    overflow:auto;
+    padding-right:4px;
+}
+
+.error{
+    min-height:18px;
+    color:#b91c1c;
+    font-size:13px;
+    text-align:center;
 }
