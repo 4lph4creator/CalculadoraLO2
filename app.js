@@ -16,10 +16,11 @@ const tabla = [
 ];
 
 // =====================
-// ESTADO
+// ESTADO (persistente)
 // =====================
 let ultimoTotal = 0;
-let stockPorIsotanque = [0,0,0,0];
+let stockPorIsotanque =
+  JSON.parse(localStorage.getItem("stockPorIsotanque")) || [0,0,0,0];
 
 // =====================
 // UTIL NUMÉRICA
@@ -41,6 +42,13 @@ function totalBordo(){
 
 function isotanqueActualIndex(){
   return Number(document.getElementById("isotanqueSelect").value)-1;
+}
+
+function guardarStock(){
+  localStorage.setItem(
+    "stockPorIsotanque",
+    JSON.stringify(stockPorIsotanque)
+  );
 }
 
 function actualizarStockUI(){
@@ -72,6 +80,8 @@ function recalcularTotalInicial(){
   ];
 
   stockPorIsotanque = cargas;
+
+  guardarStock();
 
   const total = totalBordo();
 
@@ -114,6 +124,19 @@ function actualizar(){
       "Total descargado: —";
   }
 }
+
+// =====================
+// RESTAURAR AL INICIAR
+// =====================
+window.addEventListener("load", ()=>{
+  document.getElementById("saldoIso1").value = stockPorIsotanque[0] || "";
+  document.getElementById("saldoIso2").value = stockPorIsotanque[1] || "";
+  document.getElementById("saldoIso3").value = stockPorIsotanque[2] || "";
+  document.getElementById("saldoIso4").value = stockPorIsotanque[3] || "";
+
+  actualizarStockUI();
+  actualizarCargaTotalInicialUI(totalBordo());
+});
 
 // =====================
 // EVENTOS
