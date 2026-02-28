@@ -24,60 +24,14 @@ let historial = JSON.parse(localStorage.getItem("historialDescargas")) || [];
 let cargaTotalInicial = Number(localStorage.getItem("cargaTotalInicial")) || 0;
 
 // =====================
-// CAMPAÑAS
+// UTILIDADES NUMÉRICAS
 // =====================
-let campaigns = JSON.parse(localStorage.getItem("campaigns")) || [];
-
-function saveCampaigns(){
-  localStorage.setItem("campaigns", JSON.stringify(campaigns));
-}
-
-function getActiveCampaign(){
-  return campaigns.find(c => c.endTimestamp === null) || null;
-}
-
-function startCampaign(){
-  if(getActiveCampaign()) return alert("Ya existe una campaña activa");
-
-  const initialStocks = {};
-  stockPorIsotanque.forEach((s,i)=> initialStocks[i+1]=s);
-
-  campaigns.push({
-    id:"camp_"+Date.now(),
-    startTimestamp:new Date().toISOString(),
-    endTimestamp:null,
-    initialStocks
-  });
-
-  saveCampaigns();
-  alert("Campaña iniciada");
-}
-
-function cerrarCampana(){
-  const active=getActiveCampaign();
-  if(!active) return alert("No hay campaña activa");
-
-  active.endTimestamp=new Date().toISOString();
-  saveCampaigns();
-  alert("Campaña cerrada");
-}
-
-// =====================
-// INTERPOLAR
-// =====================
-function interpolar(mm){
-  if(mm===""||isNaN(mm)) return null;
-  mm=Number(mm);
-  if(mm<tabla[0].mm||mm>tabla[tabla.length-1].mm) return "fuera";
-
-  for(let i=0;i<tabla.length-1;i++){
-    const a=tabla[i];
-    const b=tabla[i+1];
-    if(mm>=a.mm&&mm<=b.mm){
-      const r=(mm-a.mm)/(b.mm-a.mm);
-      return a.m3+r*(b.m3-a.m3);
-    }
-  }
+function parseNumero(valor) {
+  if (!valor) return 0;
+  valor = valor.trim();
+  valor = valor.replace(",", ".");
+  valor = valor.replace(/[^0-9.]/g, "");
+  return parseFloat(valor) || 0;
 }
 
 // =====================
@@ -102,33 +56,27 @@ function actualizarStockUI(){
     `Stock a bordo: ${totalBordo().toFixed(2)} m³`;
 }
 
-function persistirStock(){
-  localStorage.setItem("stockPorIsotanque", JSON.stringify(stockPorIsotanque));
-}
-
-// =====================
-// TOTAL INICIAL AUTOMÁTICO Y SINCRONIZADO
-// =====================
 function actualizarCargaTotalInicialUI(valor){
   const input=document.getElementById("cargaTotalInicial");
   input.value=valor>0?valor.toFixed(2):"";
 }
 
+// =====================
+// TOTAL INICIAL AUTOMÁTICO
+// =====================
 function recalcularTotalInicial(){
 
-  // Si ya hay stock confirmado no recalculamos
   if(totalBordo()>0) return;
 
   const cargas=[
-    Number(document.getElementById("saldoIso1").value)||0,
-    Number(document.getElementById("saldoIso2").value)||0,
-    Number(document.getElementById("saldoIso3").value)||0,
-    Number(document.getElementById("saldoIso4").value)||0
+    parseNumero(document.getElementById("saldoIso1").value),
+    parseNumero(document.getElementById("saldoIso2").value),
+    parseNumero(document.getElementById("saldoIso3").value),
+    parseNumero(document.getElementById("saldoIso4").value)
   ];
 
   const total=cargas.reduce((acc,n)=>acc+n,0);
 
-  // 🔥 ACTUALIZAMOS ESTADO INTERNO
   stockPorIsotanque=cargas;
 
   actualizarCargaTotalInicialUI(total);
@@ -136,7 +84,25 @@ function recalcularTotalInicial(){
 }
 
 // =====================
-// CALCULO
+// INTERPOLAR
+// =====================
+function interpolar(mm){
+  if(mm===""||isNaN(mm)) return null;
+  mm=Number(mm);
+  if(mm<tabla[0].mm||mm>tabla[tabla.length-1].mm) return "fuera";
+
+  for(let i=0;i<tabla.length-1;i++){
+    const a=tabla[i];
+    const b=tabla[i+1];
+    if(mm>=a.mm&&mm<=b.mm){
+      const r=(mm-a.mm)/(b.mm-a.mm);
+      return a.m3+r*(b.m3-a.m3);
+    }
+  }
+}
+
+// =====================
+// CALCULO DESCARGA
 // =====================
 function actualizar(){
   const A=interpolar(document.getElementById("nivelA").value);
@@ -165,9 +131,6 @@ function actualizar(){
 // =====================
 function registrarDescarga(volumen,tipo){
 
-  const activeCampaign=getActiveCampaign();
-  if(!activeCampaign) return alert("Debes iniciar campaña primero");
-
   const centro=document.getElementById("centro").value.trim();
   if(!centro) return alert("Debes ingresar un centro.");
 
@@ -184,19 +147,9 @@ function registrarDescarga(volumen,tipo){
   }
 
   stockPorIsotanque[idx]=Math.max(0,stockActual-volumenFinal);
-  persistirStock();
+  localStorage.setItem("stockPorIsotanque", JSON.stringify(stockPorIsotanque));
+
   actualizarStockUI();
-
-  historial.push({
-    campaignId:activeCampaign.id,
-    centro,
-    isotanque:isotanqueN,
-    tipo,
-    volumen:volumenFinal,
-    fecha:new Date().toISOString().split("T")[0]
-  });
-
-  localStorage.setItem("historialDescargas", JSON.stringify(historial));
 }
 
 // =====================
