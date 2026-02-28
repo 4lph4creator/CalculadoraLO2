@@ -28,27 +28,24 @@ let cargaTotalInicial = Number(localStorage.getItem("cargaTotalInicial")) || 0;
 // =====================
 let campaigns = JSON.parse(localStorage.getItem("campaigns")) || [];
 
-function saveCampaigns() {
+function saveCampaigns(){
   localStorage.setItem("campaigns", JSON.stringify(campaigns));
 }
 
-function getActiveCampaign() {
+function getActiveCampaign(){
   return campaigns.find(c => c.endTimestamp === null) || null;
 }
 
-function startCampaign() {
-  if (getActiveCampaign()) {
-    alert("Ya existe una campaña activa");
-    return;
-  }
+function startCampaign(){
+  if(getActiveCampaign()) return alert("Ya existe una campaña activa");
 
   const initialStocks = {};
   stockPorIsotanque.forEach((s,i)=> initialStocks[i+1]=s);
 
   campaigns.push({
-    id: "camp_" + Date.now(),
-    startTimestamp: new Date().toISOString(),
-    endTimestamp: null,
+    id:"camp_"+Date.now(),
+    startTimestamp:new Date().toISOString(),
+    endTimestamp:null,
     initialStocks
   });
 
@@ -56,11 +53,11 @@ function startCampaign() {
   alert("Campaña iniciada");
 }
 
-function cerrarCampana() {
-  const active = getActiveCampaign();
-  if (!active) return alert("No hay campaña activa");
+function cerrarCampana(){
+  const active=getActiveCampaign();
+  if(!active) return alert("No hay campaña activa");
 
-  active.endTimestamp = new Date().toISOString();
+  active.endTimestamp=new Date().toISOString();
   saveCampaigns();
   alert("Campaña cerrada");
 }
@@ -68,17 +65,17 @@ function cerrarCampana() {
 // =====================
 // INTERPOLAR
 // =====================
-function interpolar(mm) {
-  if (mm === "" || isNaN(mm)) return null;
-  mm = Number(mm);
-  if (mm < tabla[0].mm || mm > tabla[tabla.length - 1].mm) return "fuera";
+function interpolar(mm){
+  if(mm===""||isNaN(mm)) return null;
+  mm=Number(mm);
+  if(mm<tabla[0].mm||mm>tabla[tabla.length-1].mm) return "fuera";
 
-  for (let i=0;i<tabla.length-1;i++){
+  for(let i=0;i<tabla.length-1;i++){
     const a=tabla[i];
     const b=tabla[i+1];
-    if(mm>=a.mm && mm<=b.mm){
+    if(mm>=a.mm&&mm<=b.mm){
       const r=(mm-a.mm)/(b.mm-a.mm);
-      return a.m3 + r*(b.m3-a.m3);
+      return a.m3+r*(b.m3-a.m3);
     }
   }
 }
@@ -110,7 +107,7 @@ function persistirStock(){
 }
 
 // =====================
-// TOTAL INICIAL AUTOMÁTICO
+// TOTAL INICIAL AUTOMÁTICO Y SINCRONIZADO
 // =====================
 function actualizarCargaTotalInicialUI(valor){
   const input=document.getElementById("cargaTotalInicial");
@@ -118,15 +115,24 @@ function actualizarCargaTotalInicialUI(valor){
 }
 
 function recalcularTotalInicial(){
+
+  // Si ya hay stock confirmado no recalculamos
   if(totalBordo()>0) return;
 
-  const total=
-    (Number(document.getElementById("saldoIso1").value)||0)+
-    (Number(document.getElementById("saldoIso2").value)||0)+
-    (Number(document.getElementById("saldoIso3").value)||0)+
-    (Number(document.getElementById("saldoIso4").value)||0);
+  const cargas=[
+    Number(document.getElementById("saldoIso1").value)||0,
+    Number(document.getElementById("saldoIso2").value)||0,
+    Number(document.getElementById("saldoIso3").value)||0,
+    Number(document.getElementById("saldoIso4").value)||0
+  ];
+
+  const total=cargas.reduce((acc,n)=>acc+n,0);
+
+  // 🔥 ACTUALIZAMOS ESTADO INTERNO
+  stockPorIsotanque=cargas;
 
   actualizarCargaTotalInicialUI(total);
+  actualizarStockUI();
 }
 
 // =====================
