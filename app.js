@@ -16,7 +16,7 @@ const tabla = [
 ];
 
 // =====================
-// ESTADO (persistente)
+// ESTADO
 // =====================
 let ultimoTotal = 0;
 let stockPorIsotanque =
@@ -83,9 +83,26 @@ function recalcularTotalInicial(){
 
   guardarStock();
 
-  const total = totalBordo();
+  actualizarCargaTotalInicialUI(totalBordo());
+  actualizarStockUI();
+}
 
-  actualizarCargaTotalInicialUI(total);
+// =====================
+// NUEVA CAMPAÑA (RESET)
+// =====================
+function nuevaCampana(){
+
+  if(!confirm("¿Iniciar nueva campaña? Se borrarán los datos actuales.")) return;
+
+  stockPorIsotanque = [0,0,0,0];
+  guardarStock();
+
+  document.getElementById("saldoIso1").value = "";
+  document.getElementById("saldoIso2").value = "";
+  document.getElementById("saldoIso3").value = "";
+  document.getElementById("saldoIso4").value = "";
+
+  actualizarCargaTotalInicialUI(0);
   actualizarStockUI();
 }
 
@@ -149,3 +166,5 @@ document.getElementById("saldoIso1").addEventListener("input",recalcularTotalIni
 document.getElementById("saldoIso2").addEventListener("input",recalcularTotalInicial);
 document.getElementById("saldoIso3").addEventListener("input",recalcularTotalInicial);
 document.getElementById("saldoIso4").addEventListener("input",recalcularTotalInicial);
+
+document.getElementById("nuevaCampana").addEventListener("click",nuevaCampana);
