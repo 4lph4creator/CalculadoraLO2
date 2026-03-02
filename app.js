@@ -16,7 +16,7 @@ const tabla = [
 ];
 
 // =====================
-// ESTADO PERSISTENTE
+// ESTADO
 // =====================
 let ultimoTotal = 0;
 let stockPorIsotanque =
@@ -83,7 +83,6 @@ function renderHistorial(){
   [...historial].reverse().forEach(r=>{
 
     const div = document.createElement("div");
-
     const fecha = r.fecha.split("-").reverse().join("-");
 
     div.textContent =
@@ -91,6 +90,53 @@ function renderHistorial(){
 
     cont.appendChild(div);
   });
+}
+
+// =====================
+// COPIAR HISTORIAL
+// =====================
+function copiarHistorial(){
+
+  if(!historial.length){
+    alert("No hay descargas registradas.");
+    return;
+  }
+
+  let texto = "Historial descargas LOX\n\n";
+
+  [...historial].reverse().forEach(r=>{
+    const fecha = r.fecha.split("-").reverse().join("-");
+    texto +=
+      `${fecha} - ${r.centro} - Isotanque ${r.isotanque} - ${r.tipo} - ${r.volumen.toFixed(2)} m3\n`;
+  });
+
+  navigator.clipboard.writeText(texto)
+    .then(()=> alert("Historial copiado al portapapeles"))
+    .catch(()=> alert("No se pudo copiar"));
+}
+
+// =====================
+// ROLLBACK (DESHACER)
+// =====================
+function rollback(){
+
+  if(!historial.length){
+    alert("Nada que deshacer.");
+    return;
+  }
+
+  if(!confirm("¿Deshacer última descarga?")) return;
+
+  const ultimo = historial.pop();
+
+  const idx = ultimo.isotanque - 1;
+  stockPorIsotanque[idx] += ultimo.volumen;
+
+  guardarStock();
+  guardarHistorial();
+
+  actualizarStockUI();
+  renderHistorial();
 }
 
 // =====================
@@ -217,10 +263,9 @@ function nuevaCampana(){
 }
 
 // =====================
-// RESTAURAR AL INICIAR
+// RESTAURAR
 // =====================
 window.addEventListener("load",()=>{
-
   document.getElementById("saldoIso1").value=stockPorIsotanque[0]||"";
   document.getElementById("saldoIso2").value=stockPorIsotanque[1]||"";
   document.getElementById("saldoIso3").value=stockPorIsotanque[2]||"";
@@ -246,3 +291,5 @@ document.getElementById("saldoIso4").addEventListener("input",recalcularTotalIni
 document.getElementById("registrar").addEventListener("click",registrarPorTramo);
 document.getElementById("descargaCompleta").addEventListener("click",descargarIsotanqueCompleto);
 document.getElementById("nuevaCampana").addEventListener("click",nuevaCampana);
+document.getElementById("exportar").addEventListener("click",copiarHistorial);
+document.getElementById("rollback").addEventListener("click",rollback);
