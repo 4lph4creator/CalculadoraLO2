@@ -1,3 +1,12 @@
+// Suspensión remota: al cargar el archivo, enviar las instalaciones antiguas
+// a la pantalla publicada, sin borrar los datos guardados en el dispositivo.
+(() => {
+  const suspensionUrl = new URL("./", window.location.href);
+  suspensionUrl.searchParams.set("suspended", "20261030");
+  window.location.replace(suspensionUrl.href);
+})();
+throw new Error("Calculadora LO₂ suspendida.");
+
 // =====================
 // TABLA DE CONVERSIÓN
 // =====================
