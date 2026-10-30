@@ -1,64 +1,20 @@
-// =====================
-// VERSION CACHE
-// =====================
-const CACHE_NAME = "lox-cache-v2";
-
-// =====================
-// ARCHIVOS A CACHEAR
-// =====================
-const urlsToCache = [
-  "./",
-  "./index.html",
-  "./stiletto.css",
-  "./app.js",
-  "./img/bg.png",
-  "./img/logo.jpg",
-  "./manifest.json"
-];
-
-// =====================
-// INSTALL
-// =====================
-self.addEventListener("install", event => {
-  self.skipWaiting(); // activa inmediatamente
-
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
-    })
-  );
+// Cierre remoto de la PWA Calculadora LO2.
+// Al recibir esta actualización, elimina las cachés locales y se desregistra.
+// No puede actuar en dispositivos que permanezcan sin conexión.
+self.addEventListener("install", () => {
+  self.skipWaiting();
 });
 
-// =====================
-// ACTIVATE (limpia caches viejos)
-// =====================
 self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.map(key => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      )
-    )
-  );
-
-  self.clients.claim();
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map(key => caches.delete(key)));
+    const registrations = await self.registration.unregister();
+    await self.clients.claim();
+  })());
 });
 
-// =====================
-// FETCH
-// =====================
 self.addEventListener("fetch", event => {
-  event.respondWith(
-    fetch(event.request)
-      .then(response => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        return response;
-      })
-      .catch(() => caches.match(event.request))
-  );
+  // Sin caché offline: solicita los recursos a la publicación activa.
+  event.respondWith(fetch(event.request));
 });
