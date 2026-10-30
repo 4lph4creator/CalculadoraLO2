@@ -8,8 +8,7 @@ self.addEventListener("install", event => {
 
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(keys.map(key => caches.delete(key)));
+    await caches.delete("lox-cache-v2");
 
     await self.clients.claim();
 
