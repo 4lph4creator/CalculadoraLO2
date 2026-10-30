@@ -8,47 +8,31 @@
   <title>Calculadora LO₂ — Servicio suspendido</title>
   <style>
     * { box-sizing: border-box; }
+    html, body {
+      width: 100%; min-height: 100%; margin: 0;
+      background: #0b1d2b;
+    }
     body {
-      margin: 0; min-height: 100vh; display: grid; place-items: center;
-      padding: 24px; background: #101923; color: #f3f6fa;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh; min-height: 100dvh;
+      display: grid; place-items: center; overflow: auto;
     }
     main {
-      width: min(100%, 480px); padding: 36px 28px; text-align: center;
-      background: #182533; border: 1px solid #344658; border-radius: 18px;
-      box-shadow: 0 18px 55px rgba(0,0,0,.28);
+      display: grid; place-items: center;
+      width: 100%; min-height: 100vh; min-height: 100dvh;
     }
-    .mark {
-      width: 64px; height: 64px; margin: 0 auto 20px; display: grid;
-      place-items: center; border: 1px solid #62778b; border-radius: 50%;
-      color: #d9e5ef; font-size: 30px;
+    .poster {
+      display: block; width: min(100%, 1200px); height: auto;
+      max-height: 100vh; max-height: 100dvh; object-fit: contain;
     }
-    h1 { margin: 0 0 12px; font-size: clamp(24px, 6vw, 32px); letter-spacing: .04em; }
-    .status {
-      display: inline-block; margin: 8px 0 18px; padding: 7px 12px;
-      border: 1px solid #bd8840; border-radius: 999px; color: #ffd18a;
-      font-size: 12px; font-weight: 700; letter-spacing: .1em;
-    }
-    p { margin: 0; color: #c0ccd7; line-height: 1.6; }
-    .vacation { margin: 24px 0 0; padding: 0; }
-    .vacation img {
-      display: block; width: 100%; height: auto; border: 1px solid #344658;
-      border-radius: 14px;
-    }
-    .foot { margin-top: 28px; color: #8293a3; font-size: 12px; }
   </style>
 </head>
 <body>
   <main>
-    <div class="mark" aria-hidden="true">Ⅱ</div>
-    <h1>CALCULADORA LO₂</h1>
-    <div class="status">SERVICIO SUSPENDIDO</div>
-    <p>La aplicación se encuentra temporalmente fuera de servicio. El acceso a la herramienta ha sido suspendido por el administrador.</p>
-    <figure class="vacation">
-      <img src="assets/isotanque-vacaciones.jpg" alt="Isotanque LO₂ de vacaciones junto a un lago: sin descargas, sin cálculos y sin turnos por tiempo indefinido. Servicio suspendido.">
-      <figcaption>Después de tantas descargas, nuestro isotanque se fue de vacaciones. ¡Nos vemos más adelante!</figcaption>
-    </figure>
-    <div class="foot">Calculadora LO₂</div>
+    <img
+      class="poster"
+      src="assets/isotanque-vacaciones.jpg"
+      alt="Afiche de Calculadora LO₂: servicio suspendido. El isotanque se fue de vacaciones por tiempo indefinido."
+    >
   </main>
 </body>
 </html>
