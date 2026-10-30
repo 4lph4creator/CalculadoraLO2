@@ -6,6 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#0b5fa5">
   <title>Calculadora LO₂ — Servicio suspendido</title>
+  <link rel="manifest" href="manifest.json">
   <style>
     * { box-sizing: border-box; }
     html, body {
@@ -34,5 +35,14 @@
       alt="Afiche de Calculadora LO₂: servicio suspendido. El isotanque se fue de vacaciones por tiempo indefinido."
     >
   </main>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js", { updateViaCache: "none" })
+          .then(registration => registration.update())
+          .catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>
