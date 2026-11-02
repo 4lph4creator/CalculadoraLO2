@@ -1,19 +1,23 @@
-// Calculadora LO2: modo de suspensión remota.
-// Versión 2026-11-02: solicita los recursos publicados sin reutilizar
-// respuestas HTTP almacenadas en caché.
+// Calculadora LO2: baja definitiva del servicio.
 self.addEventListener("install", event => {
   event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
-    await caches.delete("lox-cache-v2");
+    const names = await caches.keys();
+    await Promise.all(names.map(name => caches.delete(name)));
     await self.clients.claim();
     const windows = await self.clients.matchAll({
       type: "window",
       includeUncontrolled: true
     });
-    await Promise.all(windows.map(client => client.navigate(client.url)));
+    await Promise.all(windows.map(client => {
+      if (client.url.startsWith(self.registration.scope)) {
+        return client.navigate(client.url);
+      }
+      return Promise.resolve();
+    }));
   })());
 });
 
