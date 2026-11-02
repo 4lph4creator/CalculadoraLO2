@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0b5fa5">
+  <title>Actualizar Calculadora LO₂</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; padding: 24px;
+      display: grid; place-items: center;
+      background: #0b1d2b; color: #fff;
+      font: 16px/1.5 system-ui, sans-serif; text-align: center;
+    }
+    main { width: min(100%, 520px); }
+    h1 { font-size: 1.6rem; }
+    p { color: #d5e0e8; }
+    #status { margin: 24px 0; min-height: 3em; }
+    a {
+      display: inline-block; padding: 13px 20px; border-radius: 8px;
+      background: #fff; color: #0b1d2b; text-decoration: none;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Actualizar Calculadora LO₂</h1>
+    <p>Esta página solicita la versión más reciente de la aplicación.</p>
+    <p id="status" role="status" aria-live="polite">Comprobando actualización…</p>
+    <a id="open" href="./">Abrir Calculadora LO₂</a>
+  </main>
+  <script>
+    (async () => {
+      const status = document.getElementById("status");
+      const open = document.getElementById("open");
+      const appUrl = new URL("./", location.href);
+      appUrl.searchParams.set("actualizada", Date.now());
+      open.href = appUrl.href;
+
+      if (!("serviceWorker" in navigator)) {
+        status.textContent = "Este navegador no admite la actualización automática. Pulsa «Abrir Calculadora LO₂».";
+        return;
+      }
+
+      try {
+        const registration = await navigator.serviceWorker.register("./service-worker.js", {
+          updateViaCache: "none"
+        });
+        status.textContent = "Solicitando la versión más reciente…";
+        await registration.update();
+
+        if (registration.waiting) {
+          registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        }
+
+        await navigator.serviceWorker.ready;
+        status.textContent = "Comprobación terminada. Abriendo la versión publicada…";
+        setTimeout(() => location.replace(appUrl.href), 700);
+      } catch (error) {
+        status.textContent = "No se pudo completar la actualización automática. Pulsa «Abrir Calculadora LO₂» para abrir la versión publicada.";
+      }
+    })();
+  </script>
+</body>
+</html>
