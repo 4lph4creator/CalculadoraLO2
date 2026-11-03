@@ -45,6 +45,36 @@
         return;
       }
 
+      const waitForActivation = worker => new Promise((resolve, reject) => {
+        if (worker.state === "activated") {
+          resolve();
+          return;
+        }
+        if (worker.state === "redundant") {
+          reject(new Error("La instalación del Service Worker fue descartada."));
+          return;
+        }
+
+        const timeout = setTimeout(() => {
+          worker.removeEventListener("statechange", onStateChange);
+          reject(new Error("La activación tardó demasiado."));
+        }, 20000);
+
+        const onStateChange = () => {
+          if (worker.state === "activated") {
+            clearTimeout(timeout);
+            worker.removeEventListener("statechange", onStateChange);
+            resolve();
+          } else if (worker.state === "redundant") {
+            clearTimeout(timeout);
+            worker.removeEventListener("statechange", onStateChange);
+            reject(new Error("La instalación del Service Worker fue descartada."));
+          }
+        };
+
+        worker.addEventListener("statechange", onStateChange);
+      });
+
       try {
         const registration = await navigator.serviceWorker.register("./service-worker.js", {
           updateViaCache: "none"
@@ -52,15 +82,18 @@
         status.textContent = "Solicitando la versión más reciente…";
         await registration.update();
 
-        if (registration.waiting) {
-          registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        const updatingWorker = registration.installing || registration.waiting;
+        if (updatingWorker) {
+          status.textContent = "Instalando la actualización…";
+          await waitForActivation(updatingWorker);
+        } else if (!registration.active) {
+          await navigator.serviceWorker.ready;
         }
 
-        await navigator.serviceWorker.ready;
-        status.textContent = "Comprobación terminada. Abriendo la versión publicada…";
-        setTimeout(() => location.replace(appUrl.href), 700);
+        status.textContent = "Comprobación terminada. Abriendo la pantalla de servicio suspendido…";
+        setTimeout(() => location.replace(appUrl.href), 500);
       } catch (error) {
-        status.textContent = "No se pudo completar la actualización automática. Pulsa «Abrir Calculadora LO₂» para abrir la versión publicada.";
+        status.textContent = "No se pudo confirmar la actualización automática. Puedes abrir la pantalla publicada con el botón.";
       }
     })();
   </script>
